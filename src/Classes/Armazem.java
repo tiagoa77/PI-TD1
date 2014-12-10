@@ -12,7 +12,7 @@ import java.util.HashMap;
  * @author Tiago
  */
 public class Armazem {
-    private int id;
+    private int id_armazem;
     private String localidade;
     private String coordenadas;
     
@@ -21,7 +21,7 @@ public class Armazem {
     private HashMap<Integer,Produto> produtos;
     
     public Armazem(){
-        this.id=0;
+        this.id_armazem=0;
         this.localidade="";
         this.coordenadas="";
         this.funcionarios=new HashMap<>(); // quando tiver os dao vai ficar new FuncionarioDAO()
@@ -30,15 +30,15 @@ public class Armazem {
     }
     
     public Armazem(Armazem a){
-        this.id=a.getId();
+        this.id_armazem=a.getId_armazem();
         this.localidade=a.getLocalidade();
         this.coordenadas=a.getCoordenadas();
         this.funcionarios=a.getFuncionarios();
         
     }
 
-    public int getId() {
-        return id;
+    public int getId_armazem() {
+        return id_armazem;
     }
 
     public String getLocalidade() {
@@ -50,7 +50,12 @@ public class Armazem {
     }
 
     public HashMap<Integer, Funcionario> getFuncionarios() {
-        return funcionarios;
+        HashMap<Integer,Funcionario> aux = new HashMap<>();
+        
+        for(Funcionario f : this.funcionarios.values())
+                aux.put(f.getId_funcionario(),f.clone());
+        
+        return aux;
     }
 
     public HashMap<Integer, Veiculo> getVeiculos() {
@@ -61,10 +66,6 @@ public class Armazem {
         return produtos;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public void setLocalidade(String localidade) {
         this.localidade = localidade;
     }
@@ -73,18 +74,18 @@ public class Armazem {
         this.coordenadas = coordenadas;
     }
 
-    public void setFuncionarios(HashMap<Integer, Funcionario> funcionarios) {
-        this.funcionarios = funcionarios;
-    }
-
-    public void setVeiculos(HashMap<Integer, Veiculo> veiculos) {
-        this.veiculos = veiculos;
-    }
-
-    public void setProdutos(HashMap<Integer, Produto> produtos) {
-        this.produtos = produtos;
+    
+    public boolean equals(Object obj){
+        if(this==obj) return true;
+        if((obj==null) || (this.getClass() != obj.getClass()))
+            return false;
+        Armazem aux = (Armazem) obj;
+        return this.id_armazem == aux.getId_armazem() && this.funcionarios.equals(aux.getFuncionarios());
     }
     
+    public Armazem clone(){
+        return new Armazem(this);
+    }
     
     
 }
