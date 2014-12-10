@@ -51,19 +51,23 @@ public class Armazem {
 
     public HashMap<Integer, Funcionario> getFuncionarios() {
         HashMap<Integer,Funcionario> aux = new HashMap<>();
-        
         for(Funcionario f : this.funcionarios.values())
-                aux.put(f.getId_funcionario(),f.clone());
-        
+            aux.put(f.getId_funcionario(),f.clone());
         return aux;
     }
 
     public HashMap<Integer, Veiculo> getVeiculos() {
-        return veiculos;
+        HashMap<Integer, Veiculo> aux = new HashMap<>();
+        for(Veiculo v : this.veiculos.values())
+            aux.put(v.getId_veiculo(), v.clone());
+        return aux;
     }
 
     public HashMap<Integer, Produto> getProdutos() {
-        return produtos;
+        HashMap<Integer, Produto> aux = new HashMap<>();
+        for(Produto p : this.produtos.values())
+            aux.put(p.getId_produto(), p.clone());
+        return aux;
     }
 
     public void setLocalidade(String localidade) {
