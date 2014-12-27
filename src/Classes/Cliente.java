@@ -5,7 +5,9 @@
  */
 package Classes;
 
+import ClassesDAO.EncomendaDAO;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -19,7 +21,7 @@ public class Cliente {
     private int nif;
     private int activo;
     private int local_id_local;
-    private HashMap<Integer,Encomenda> encomendas;
+    private Map<Integer,Encomenda> encomendas;
     
     public Cliente(){
         this.id_cliente=0;
@@ -29,7 +31,18 @@ public class Cliente {
         this.nif=0;
         this.activo=0;
         this.local_id_local=0;
-        this.encomendas=new HashMap<>();
+        this.encomendas=new EncomendaDAO();
+    }
+    
+    public Cliente(int id, String nome_far, String nome_resp, int contac, int nif, int activo, int id_local){
+        this.id_cliente=id;
+        this.nome_farmacia=nome_far;
+        this.nome_farmaceutico=nome_resp;
+        this.contacto=contac;
+        this.nif=nif;
+        this.activo=activo;
+        this.local_id_local=id_local;
+        this.encomendas=new EncomendaDAO(this.id_cliente);
     }
     
     public Cliente(Cliente c){

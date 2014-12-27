@@ -6,6 +6,7 @@
 package Classes;
 
 import ClassesDAO.ArmazemDAO;
+import ClassesDAO.RotaDAO;
 import java.util.Map;
 
 /**
@@ -19,6 +20,7 @@ public class Sistema {
     
     public Sistema(){
         this.armazens = new ArmazemDAO();
+        this.rotas = new RotaDAO();
     }
     
 }

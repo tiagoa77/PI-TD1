@@ -1,16 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ClassesDAO;
 
-import Classes.Armazem;
+import Classes.Rota;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,24 +12,24 @@ import java.util.Set;
  *
  * @author Tiago
  */
+public class RotaDAO implements Map<Integer,Rota>{
 
-public class ArmazemDAO implements Map<Integer, Armazem> {
-    private static final int localidade=2;
-    public ArmazemDAO() {
+    public RotaDAO() {
+        
     }
-    
+
+    @Override
     public int size() {
         int res = 0;
         try {
             Statement stm = ConexaoBD.getConexao().createStatement();
-            String sql = "SELECT * FROM armazem";
+            String sql = "SELECT * FROM ROTA";
             ResultSet rs = stm.executeQuery(sql);
             while (rs.next()) {
                 res++;
             }
             ConexaoBD.fecharCursor(rs, stm);
-        } catch (SQLException e) {
-        }
+        } catch (SQLException e) {}
         return res;
     }
 
@@ -59,58 +53,42 @@ public class ArmazemDAO implements Map<Integer, Armazem> {
         boolean res = false;
         try {
             Integer id = (Integer) key;
-            String sql = "SELECT * FROM armazem WHERE id_armazem= " + id;
+            String sql = "SELECT * FROM ROTA r WHERE r.id_rota = "+id;
             Statement stm = ConexaoBD.getConexao().createStatement();
             ResultSet rs = stm.executeQuery(sql);
             res = rs.next();
-
-            ConexaoBD.fecharCursor(rs, stm);
-        } catch (SQLException e) {}
-        return res;
-    }
-
-    @Override
-    public boolean containsValue(Object value) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Armazem get(Object key) {
-        Armazem a = null;
-        try {
-            Integer id = (Integer) key;
-            Statement stm = ConexaoBD.getConexao().createStatement();
-            String sql = "SELECT * FROM armazem a WHERE a.id_armazem= "+id;
-            ResultSet rs = stm.executeQuery(sql);
-            
-            if(rs.next()) {
-                String id_armazem = rs.getString(1);
-                String localidade = rs.getString(2);
-                String coordenadas = rs.getString(3);
-            }            
             ConexaoBD.fecharCursor(rs, stm);
         } catch (SQLException e) {
         }
-        return a;    
+        return res;
+    }
+
+    
+
+    @Override
+    public Rota get(Object key) {
+        Rota ro = null;
+        try {
+            Integer id = (Integer) key;
+            Statement stm = ConexaoBD.getConexao().createStatement();
+            String sql = "SELECT * FROM ROTA WHERE id_rota= "+id;
+            ResultSet rs = stm.executeQuery(sql);
+            
+            if(rs.next()) {
+             //   ro = new Rota(rs.getInt(1),rs.getDate(2),rs.getObject(3),rs.getObject(4, null));
+            }            
+            ConexaoBD.fecharCursor(rs, stm);
+        } catch (SQLException e) {}
+        return ro;
     }
 
     @Override
-    public Armazem put(Integer key, Armazem value) {
+    public Rota put(Integer key, Rota value) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Armazem remove(Object key) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void putAll(Map<? extends Integer, ? extends Armazem> m) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void clear() {
+    public Rota remove(Object key) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -120,12 +98,27 @@ public class ArmazemDAO implements Map<Integer, Armazem> {
     }
 
     @Override
-    public Collection<Armazem> values() {
+    public Collection<Rota> values() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Set<Entry<Integer, Armazem>> entrySet() {
+    public Set<Entry<Integer, Rota>> entrySet() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public boolean containsValue(Object value) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public void putAll(Map<? extends Integer, ? extends Rota> m) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void clear() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

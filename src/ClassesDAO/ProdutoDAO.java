@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ClassesDAO;
 
 import Classes.Produto;
@@ -12,15 +7,26 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  *
  * @author Tiago
  */
 public class ProdutoDAO implements Map<Integer, Produto> {
-
+    private int idproduto;
+    
+    public ProdutoDAO() {
+    
+    }
+    
+    public ProdutoDAO(int id_produto) {
+        this.idproduto=id_produto;
+    }
+    
     public int size() {
         int res = 0;
         try {
@@ -38,17 +44,17 @@ public class ProdutoDAO implements Map<Integer, Produto> {
 
     @Override
     public boolean isEmpty() {
-         boolean res = false;
+        boolean res = false;
         try {
             Statement stm = ConexaoBD.getConexao().createStatement();
             String sql = "SELECT * FROM PRODUTO";
             ResultSet rs = stm.executeQuery(sql);
-            if(rs.next()==true)
-                res = false;
+            if(!rs.next())
+                res=true;
             ConexaoBD.fecharCursor(rs, stm);
         } catch (SQLException e) {
         }
-        return res;    
+        return res; 
     }
 
     @Override
@@ -56,7 +62,7 @@ public class ProdutoDAO implements Map<Integer, Produto> {
         boolean res = false;
         try {
             Integer id = (Integer) key;
-            String sql = "SELECT * FROM PRODUTO p WHERE p.id_produto = '"+id+"'";
+            String sql = "SELECT * FROM PRODUTO p WHERE p.id_produto = "+id;
             Statement stm = ConexaoBD.getConexao().createStatement();
             ResultSet rs = stm.executeQuery(sql);
             res = rs.next();
@@ -64,11 +70,6 @@ public class ProdutoDAO implements Map<Integer, Produto> {
         } catch (SQLException e) {
         }
         return res;
-    }
-
-    @Override
-    public boolean containsValue(Object value) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -136,6 +137,51 @@ public class ProdutoDAO implements Map<Integer, Produto> {
         return prod;   
     }
 
+
+    @Override
+    public Set<Integer> keySet() {
+        Set<Integer> res = new TreeSet<>();
+        try {
+            String sql = "SELECT id_produto FROM Produto p WHERE p.activo = 1";
+            Statement stm = ConexaoBD.getConexao().createStatement();
+            ResultSet rs = stm.executeQuery(sql);
+            
+            while(rs.next())
+                res.add(rs.getInt(1));
+            
+            ConexaoBD.fecharCursor(rs, stm);
+        } catch (SQLException e) {
+        }
+        return res;
+    }
+
+    @Override
+    public Collection<Produto> values() {
+        Collection<Produto> res = new HashSet<>();
+        try {
+            String sql = "SELECT nome FROM Produto p WHERE p.activo= 1";
+            Statement stm = ConexaoBD.getConexao().createStatement();
+            ResultSet rs = stm.executeQuery(sql);
+            
+            while(rs.next())
+                res.add(this.get(rs.getString(2)));
+            
+            ConexaoBD.fecharCursor(rs, stm);
+        } catch (SQLException e) {
+        }
+        return res;
+    }
+
+    @Override
+    public Set<Entry<Integer, Produto>> entrySet() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public boolean containsValue(Object value) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     @Override
     public void putAll(Map<? extends Integer, ? extends Produto> m) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -144,21 +190,6 @@ public class ProdutoDAO implements Map<Integer, Produto> {
     @Override
     public void clear() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Set<Integer> keySet() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Collection<Produto> values() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Set<Entry<Integer, Produto>> entrySet() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
+    }    
+    
 }

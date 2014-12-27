@@ -5,7 +5,9 @@
  */
 package Classes;
 
+import ClassesDAO.ProdutoDAO;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -17,7 +19,7 @@ public class Encomenda {
     private int banheiras; //numero total de banheiras
     private int activa;
     private int cliente_id_cliente;
-    private HashMap<Integer,Produto> produtos;
+    private Map<Integer,Produto> produtos;
     
     public Encomenda(){
         this.id_encomenda=0;
@@ -25,7 +27,16 @@ public class Encomenda {
         this.banheiras=0;
         this.activa=0;
         this.cliente_id_cliente=0;
-        this.produtos=new HashMap<>();
+        this.produtos=new ProdutoDAO(this.id_encomenda);
+    }
+    
+    public Encomenda(int id, int factura, int banheiras, int activa, int id_cliente){
+        this.id_encomenda=0;
+        this.factura=0;
+        this.banheiras=0;
+        this.activa=0;
+        this.cliente_id_cliente=0;
+        this.produtos=new ProdutoDAO(this.id_encomenda);
     }
     
     public Encomenda(Encomenda e){
