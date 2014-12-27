@@ -28,7 +28,7 @@ public class Armazem {
         this.veiculos=new HashMap<>();
         this.produtos=new HashMap<>();
     }
-    
+
     public Armazem(Armazem a){
         this.id_armazem=a.getId_armazem();
         this.localidade=a.getLocalidade();
@@ -52,7 +52,7 @@ public class Armazem {
     public HashMap<Integer, Funcionario> getFuncionarios() {
         HashMap<Integer,Funcionario> aux = new HashMap<>();
         for(Funcionario f : this.funcionarios.values())
-            aux.put(f.getId_funcionario(),f.clone());
+            aux.put(f.getId_funcionario(),f.clone()); // tirar os clones
         return aux;
     }
 

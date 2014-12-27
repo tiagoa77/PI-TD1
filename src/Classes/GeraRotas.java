@@ -5,20 +5,14 @@
  */
 package Classes;
 
-import ClassesDAO.ArmazemDAO;
-import java.util.Map;
+import java.util.HashMap;
 
 /**
  *
  * @author Tiago
  */
-public class Sistema {
+public class GeraRotas {
     
-    private Map<Integer,Armazem> armazens;
-    private Map<Integer,Rota> rotas;
     
-    public Sistema(){
-        this.armazens = new ArmazemDAO();
-    }
-    
+    private HashMap<Integer,Rota> rotas;
 }
