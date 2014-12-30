@@ -7,10 +7,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
-/**
+/** ESTÁ
  *
  * @author Tiago
  */
@@ -95,7 +97,7 @@ public class EncomendaDAO implements Map<Integer,Encomenda>{
         return enc;
 
     }
-
+    //FALTA VER ISTO
     @Override
     public Encomenda put(Integer key, Encomenda value) {
         Encomenda enc = null;
@@ -133,7 +135,7 @@ public class EncomendaDAO implements Map<Integer,Encomenda>{
             cs.setInt(3, banheiras);
             cs.setInt(4, 1);
             cs.setInt(5, escolhe_cliente);
-            
+            cs.executeUpdate();
             
         }catch(SQLException e){ }
         
@@ -142,17 +144,51 @@ public class EncomendaDAO implements Map<Integer,Encomenda>{
 
     @Override
     public Encomenda remove(Object key) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Encomenda enc = null;
+        CallableStatement cs = null;
+        try {
+            Integer id = (Integer) key;
+            String sql = "{call remove_encomenda(?)}";
+            cs = ConexaoBD.getConexao().prepareCall(sql);
+            cs.setInt(1,id);
+            cs.execute();
+        } catch (SQLException e) {
+        }
+        return enc;   
     }
 
     @Override
     public Set<Integer> keySet() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Set<Integer> res = new TreeSet<>();
+        try {
+            String sql = "SELECT id_encomenda FROM Encomenda WHERE activa = 1";
+            Statement stm = ConexaoBD.getConexao().createStatement();
+            ResultSet rs = stm.executeQuery(sql);
+            
+            while(rs.next())
+                res.add(rs.getInt(1));
+            
+            ConexaoBD.fecharCursor(rs, stm);
+        } catch (SQLException e) {
+        }
+        return res;
     }
 
     @Override
     public Collection<Encomenda> values() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Collection<Encomenda> res = new HashSet<>();
+        try {
+            String sql = "SELECT factura FROM Encomenda WHERE activa= 1";
+            Statement stm = ConexaoBD.getConexao().createStatement();
+            ResultSet rs = stm.executeQuery(sql);
+            
+            while(rs.next())
+                res.add(this.get(rs.getString(2)));
+            
+            ConexaoBD.fecharCursor(rs, stm);
+        } catch (SQLException e) {
+        }
+        return res;
     }
 
     @Override

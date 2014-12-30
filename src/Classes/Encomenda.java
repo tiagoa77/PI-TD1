@@ -27,7 +27,7 @@ public class Encomenda {
         this.banheiras=0;
         this.activa=0;
         this.cliente_id_cliente=0;
-        this.produtos=new ProdutoDAO(this.id_encomenda);
+        //this.produtos=new ProdutoDAO(this.id_encomenda);
     }
     
     public Encomenda(int id, int factura, int banheiras, int activa, int id_cliente){
@@ -36,7 +36,7 @@ public class Encomenda {
         this.banheiras=0;
         this.activa=0;
         this.cliente_id_cliente=0;
-        this.produtos=new ProdutoDAO(this.id_encomenda);
+        //this.produtos=new ProdutoDAO(this.id_encomenda);
     }
     
     public Encomenda(Encomenda e){

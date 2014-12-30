@@ -5,9 +5,13 @@
  */
 package Classes;
 
+import ClassesDAO.FuncionarioDAO;
+import ClassesDAO.ProdutoDAO;
+import ClassesDAO.VeiculoDAO;
 import java.util.HashMap;
+import java.util.Map;
 
-/**
+/** ESTÁ
  *
  * @author Tiago
  */
@@ -16,17 +20,26 @@ public class Armazem {
     private String localidade;
     private String coordenadas;
     
-    private HashMap<Integer,Funcionario> funcionarios;
-    private HashMap<Integer,Veiculo> veiculos;
-    private HashMap<Integer,Produto> produtos;
+    private Map<Integer,Funcionario> funcionarios;
+    private Map<Integer,Veiculo> veiculos;
+    private Map<Integer,Produto> produtos;
     
     public Armazem(){
         this.id_armazem=0;
         this.localidade="";
         this.coordenadas="";
-        this.funcionarios=new HashMap<>(); // quando tiver os dao vai ficar new FuncionarioDAO()
-        this.veiculos=new HashMap<>();
-        this.produtos=new HashMap<>();
+        this.funcionarios=new FuncionarioDAO(this.id_armazem); // quando tiver os dao vai ficar new FuncionarioDAO()
+        this.veiculos=new VeiculoDAO(this.id_armazem);
+        //this.produtos=new ProdutoDAO(this.id_armazem);
+    }
+    
+    public Armazem(int id, String loc,String coord){
+        this.id_armazem=id;
+        this.localidade=loc;
+        this.coordenadas=coord;
+        this.funcionarios=new FuncionarioDAO(this.id_armazem); // quando tiver os dao vai ficar new FuncionarioDAO()
+        this.veiculos=new VeiculoDAO(this.id_armazem);
+        //this.produtos=new ProdutoDAO(this.id_armazem);
     }
 
     public Armazem(Armazem a){
@@ -34,6 +47,9 @@ public class Armazem {
         this.localidade=a.getLocalidade();
         this.coordenadas=a.getCoordenadas();
         this.funcionarios=a.getFuncionarios();
+        this.funcionarios=new FuncionarioDAO(this.id_armazem); // quando tiver os dao vai ficar new FuncionarioDAO()
+        this.veiculos=new VeiculoDAO(this.id_armazem);
+        //this.produtos=new ProdutoDAO(this.id_armazem);
         
     }
 
