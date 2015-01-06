@@ -20,11 +20,19 @@ public class Login {
         this.pass="";
     }
     
+    public Login(String user, String pass){
+
+        this.user=user;
+        this.pass=pass;
+    }
+    
     public Login(Login l){
         this.id_login=l.getId_login();
         this.user=l.getUser();
         this.pass=l.getPass();
     }
+    
+    
 
     public int getId_login() {
         return id_login;

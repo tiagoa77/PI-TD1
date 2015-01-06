@@ -5,6 +5,7 @@
  */
 package GUI;
 
+import Classes.Sistema;
 import javax.swing.JDialog;
 
 /**
@@ -12,14 +13,19 @@ import javax.swing.JDialog;
  * @author Tiago
  */
 public class Inicio extends javax.swing.JFrame {
-
+    Sistema sistema;
     /**
      * Creates new form Inicio
      */
     public Inicio() {
         initComponents();
+        this.setLocationRelativeTo(null);
+        this.sistema=new Sistema();
     }
 
+    public Sistema getSistema(){
+        return this.sistema;
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -86,6 +92,11 @@ public class Inicio extends javax.swing.JFrame {
         MenuOpcoes.setText("Menu");
 
         AdicionarAdmin.setText("Adicionar Admin");
+        AdicionarAdmin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AdicionarAdminActionPerformed(evt);
+            }
+        });
         MenuOpcoes.add(AdicionarAdmin);
 
         Sair.setText("Sair");
@@ -118,16 +129,23 @@ public class Inicio extends javax.swing.JFrame {
 
     private void SairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SairActionPerformed
         // TODO add your handling code here:
+        System.exit(1);
     }//GEN-LAST:event_SairActionPerformed
 
     private void jButtonLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLoginActionPerformed
         // TODO add your handling code here:
         
-        JDialog frame = new Login(this);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        new Login(sistema).setVisible(true);
+        this.setVisible(false);
+        
                
     }//GEN-LAST:event_jButtonLoginActionPerformed
+
+    private void AdicionarAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AdicionarAdminActionPerformed
+        // TODO add your handling code here:
+        new AdicionarAdmin(sistema).setVisible(true);
+        
+    }//GEN-LAST:event_AdicionarAdminActionPerformed
 
     /**
      * @param args the command line arguments
