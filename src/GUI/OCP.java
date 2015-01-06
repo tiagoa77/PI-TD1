@@ -5,7 +5,9 @@
  */
 package GUI;
 
+import Classes.Produto;
 import Classes.Sistema;
+import javax.swing.DefaultListModel;
 
 /**
  *
@@ -13,14 +15,67 @@ import Classes.Sistema;
  */
 public class OCP extends javax.swing.JFrame {
     Sistema sistema;
+    
     /**
      * Creates new form NewJFrame
      */
-    public OCP() {
+    public OCP(Sistema s) {
         initComponents();
-        this.sistema=new Sistema();
+        this.sistema=s;
+        this.jTextPaneSessao.setText(this.sistema.getActivo());
+        this.jTextPaneSessao7.setText(this.sistema.getActivo());
+        listaProdutos();
+        
+        
+        this.jTextPaneAprovacao.setEditable(false);
+        this.jTextPaneDataHora.setEditable(false);
+        this.jTextPaneDataHoraEncomenda.setEditable(false);
+        this.jTextPaneDataNascimento.setEditable(false);
+        this.jTextPaneEncomenda.setEditable(false);
+        this.jTextPaneFuncao.setEditable(false);
+        this.jTextPaneMorada.setEditable(false);
+        this.jTextPaneMoradaFuncionario.setEditable(false);
+        this.jTextPaneNIF.setEditable(false);
+        this.jTextPaneNome.setEditable(false);
+        this.jTextPaneNomeFarmaceutico.setEditable(false);
+        this.jTextPaneNomeFuncionario.setEditable(false);
+        this.jTextPaneObservacoes.setEditable(false);
+        this.jTextPanePreco.setEditable(false);
+        this.jTextPaneProduto.setEditable(false);
+        this.jTextPaneRotaID.setEditable(false);
+        this.jTextPaneSessao.setEditable(false);
+        this.jTextPaneSessao1.setEditable(false);
+        this.jTextPaneSessao4.setEditable(false);
+        this.jTextPaneSessao5.setEditable(false);
+        this.jTextPaneSessao7.setEditable(false);
+        this.jTextPaneTelefone.setEditable(false);
+        this.jTextPaneTelefoneFuncionario.setEditable(false);
+        this.jTextPaneTipo.setEditable(false);
+        
+        
+        
+        
     }
+    
+    public void listaProdutos(){
+        DefaultListModel<String> str = new DefaultListModel<>();
+        for (int i : this.sistema.getProdutos().keySet()) {
+            str.addElement(this.sistema.getProdutos().get(i).getNome());
+        }
+        jListProdutos.setModel(str);
+    }
+    
+    public String seleccionaProduto() {
+        String s = null;
 
+        if (jListProdutos.getSelectedIndex() != -1) {
+            s = jListProdutos.getSelectedValue().toString();
+        }
+
+        //listaVoluntarios.clearSelection();
+        return s;
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -288,13 +343,6 @@ public class OCP extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(EncomendasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(EncomendasLayout.createSequentialGroup()
-                        .addComponent(jLabelSessao1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextPaneSessao1, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 58, Short.MAX_VALUE)
-                        .addComponent(jLabelImagem1)
-                        .addGap(19, 19, 19))
-                    .addGroup(EncomendasLayout.createSequentialGroup()
                         .addGroup(EncomendasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(EncomendasLayout.createSequentialGroup()
                                 .addComponent(jScrollPaneEncomendas, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -310,9 +358,17 @@ public class OCP extends javax.swing.JFrame {
                                         .addGroup(EncomendasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(jTextPaneDataHoraEncomenda, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(jTextPaneEncomenda, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                            .addComponent(jRadioButtonActivasInactivas)
-                            .addComponent(jLabelEncomendas, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(jRadioButtonActivasInactivas))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(EncomendasLayout.createSequentialGroup()
+                        .addGroup(EncomendasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jLabelEncomendas, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabelSessao1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jTextPaneSessao1, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 58, Short.MAX_VALUE)
+                        .addComponent(jLabelImagem1)
+                        .addGap(19, 19, 19))))
         );
         EncomendasLayout.setVerticalGroup(
             EncomendasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -322,11 +378,9 @@ public class OCP extends javax.swing.JFrame {
                     .addComponent(jLabelSessao1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextPaneSessao1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabelImagem1, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(8, 8, 8)
-                .addComponent(jLabelEncomendas, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(EncomendasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, EncomendasLayout.createSequentialGroup()
-                        .addGap(6, 6, 6)
+                        .addGap(40, 40, 40)
                         .addGroup(EncomendasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabelEncomenda, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jTextPaneEncomenda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -339,6 +393,8 @@ public class OCP extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPaneProdutosEncomendas, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(EncomendasLayout.createSequentialGroup()
+                        .addGap(8, 8, 8)
+                        .addComponent(jLabelEncomendas, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPaneEncomendas, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
@@ -424,13 +480,13 @@ public class OCP extends javax.swing.JFrame {
                                 .addGroup(ClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jTextPaneTelefone, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabelNomeTelefone, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(jLabelNomeMorada, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(ClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addGroup(ClientesLayout.createSequentialGroup()
                                     .addComponent(jButtonEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                     .addComponent(jButtonGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(jTextPaneMorada, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(jTextPaneMorada, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabelNomeMorada, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(19, Short.MAX_VALUE))
         );
         ClientesLayout.setVerticalGroup(
@@ -569,13 +625,13 @@ public class OCP extends javax.swing.JFrame {
                                     .addGroup(FuncionariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(jTextPaneTelefoneFuncionario, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jLabelNomeTelefoneFuncionario, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addComponent(jLabelNomeMoradaFuncionario, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGroup(FuncionariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(FuncionariosLayout.createSequentialGroup()
                                         .addComponent(jButtonEditarFuncionario, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(jButtonGuardarFuncionario, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(jTextPaneMoradaFuncionario, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                    .addComponent(jTextPaneMoradaFuncionario, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jLabelNomeMoradaFuncionario, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addContainerGap(63, Short.MAX_VALUE)))
         );
         FuncionariosLayout.setVerticalGroup(
@@ -636,6 +692,11 @@ public class OCP extends javax.swing.JFrame {
 
         jLabelProdutos.setText("Produtos");
 
+        jListProdutos.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                jListProdutosValueChanged(evt);
+            }
+        });
         jScrollPaneProdutos.setViewportView(jListProdutos);
 
         jLabelImagem7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/logo.png"))); // NOI18N
@@ -687,8 +748,8 @@ public class OCP extends javax.swing.JFrame {
                             .addGroup(ProdutosLayout.createSequentialGroup()
                                 .addGap(101, 101, 101)
                                 .addGroup(ProdutosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabelObservacoes, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextPaneObservacoes, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                    .addComponent(jTextPaneObservacoes, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabelObservacoes, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                     .addGroup(ProdutosLayout.createSequentialGroup()
                         .addComponent(jLabelSessao7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -770,6 +831,7 @@ public class OCP extends javax.swing.JFrame {
 
     private void SairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SairActionPerformed
         // TODO add your handling code here:
+        System.exit(1);
     }//GEN-LAST:event_SairActionPerformed
 
     private void jComboBoxMotoristaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxMotoristaActionPerformed
@@ -795,6 +857,26 @@ public class OCP extends javax.swing.JFrame {
         new AdicionarProduto(sistema).setVisible(true);
     }//GEN-LAST:event_jButtonAdicionarProdutoActionPerformed
 
+    private void jListProdutosValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jListProdutosValueChanged
+        // TODO add your handling code here:
+        String aux = seleccionaProduto();
+        Produto v=null;
+        for(int i : this.sistema.getProdutos().keySet())
+            if(this.sistema.getProdutos().get(i).getNome().equals(aux))
+                v=this.sistema.getProdutos().get(i);
+        
+        
+        this.jTextPaneProduto.setText(v.getNome());
+        this.jTextPaneTipo.setText(v.getTipo());
+        StringBuilder sb = new StringBuilder();
+        String preco = Double.toString(v.getPreco());
+        sb.append(preco);
+        sb.append("€");
+        this.jTextPanePreco.setText(sb.toString());
+        this.jTextPaneObservacoes.setText(v.getDescricao());
+        
+    }//GEN-LAST:event_jListProdutosValueChanged
+
     /**
      * @param args the command line arguments
      */
@@ -808,12 +890,8 @@ public class OCP extends javax.swing.JFrame {
     private javax.swing.JMenu MenuOpcoes;
     private javax.swing.JPanel Produtos;
     private javax.swing.JPanel Rotas;
-    private javax.swing.JPanel Rotas1;
-    private javax.swing.JPanel Rotas2;
     private javax.swing.JMenuItem Sair;
     private javax.swing.JTabbedPane Tabs;
-    private javax.swing.JTabbedPane Tabs1;
-    private javax.swing.JTabbedPane Tabs2;
     private javax.swing.JButton jButtonAdicionar;
     private javax.swing.JButton jButtonAdicionarFuncionario;
     private javax.swing.JButton jButtonAdicionarProduto;
@@ -825,18 +903,10 @@ public class OCP extends javax.swing.JFrame {
     private javax.swing.JButton jButtonRemoverFuncionario;
     private javax.swing.JButton jButtonRemoverProduto;
     private javax.swing.JButton jButtonValidar;
-    private javax.swing.JButton jButtonValidar1;
-    private javax.swing.JButton jButtonValidar2;
     private javax.swing.JComboBox jComboBoxMotorista;
-    private javax.swing.JComboBox jComboBoxMotorista1;
-    private javax.swing.JComboBox jComboBoxMotorista2;
     private javax.swing.JComboBox jComboBoxVeiculo;
-    private javax.swing.JComboBox jComboBoxVeiculo1;
-    private javax.swing.JComboBox jComboBoxVeiculo2;
     private javax.swing.JLabel jLabelClientes;
     private javax.swing.JLabel jLabelDataHora;
-    private javax.swing.JLabel jLabelDataHora1;
-    private javax.swing.JLabel jLabelDataHora2;
     private javax.swing.JLabel jLabelDataHoraEncomenda;
     private javax.swing.JLabel jLabelDataNascimento;
     private javax.swing.JLabel jLabelDataTipo;
@@ -846,8 +916,6 @@ public class OCP extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelFuncionarios;
     private javax.swing.JLabel jLabelImagem;
     private javax.swing.JLabel jLabelImagem1;
-    private javax.swing.JLabel jLabelImagem2;
-    private javax.swing.JLabel jLabelImagem3;
     private javax.swing.JLabel jLabelImagem4;
     private javax.swing.JLabel jLabelImagem5;
     private javax.swing.JLabel jLabelImagem7;
@@ -855,11 +923,7 @@ public class OCP extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelInformacao1;
     private javax.swing.JLabel jLabelLocais;
     private javax.swing.JLabel jLabelLocais1;
-    private javax.swing.JLabel jLabelLocais2;
-    private javax.swing.JLabel jLabelLocais3;
     private javax.swing.JLabel jLabelMotorista;
-    private javax.swing.JLabel jLabelMotorista1;
-    private javax.swing.JLabel jLabelMotorista2;
     private javax.swing.JLabel jLabelNIF;
     private javax.swing.JLabel jLabelNome;
     private javax.swing.JLabel jLabelNomeFarmaceutico;
@@ -873,32 +937,20 @@ public class OCP extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelProduto;
     private javax.swing.JLabel jLabelProdutos;
     private javax.swing.JLabel jLabelRota;
-    private javax.swing.JLabel jLabelRota1;
-    private javax.swing.JLabel jLabelRota2;
     private javax.swing.JLabel jLabelRotas;
-    private javax.swing.JLabel jLabelRotas1;
-    private javax.swing.JLabel jLabelRotas2;
     private javax.swing.JLabel jLabelSessao;
     private javax.swing.JLabel jLabelSessao1;
-    private javax.swing.JLabel jLabelSessao2;
-    private javax.swing.JLabel jLabelSessao3;
     private javax.swing.JLabel jLabelSessao4;
     private javax.swing.JLabel jLabelSessao5;
     private javax.swing.JLabel jLabelSessao7;
     private javax.swing.JLabel jLabelVeiculo;
-    private javax.swing.JLabel jLabelVeiculo1;
-    private javax.swing.JLabel jLabelVeiculo2;
     private javax.swing.JList jListClientes;
     private javax.swing.JList jListEncomendas;
     private javax.swing.JList jListFuncionarios;
     private javax.swing.JList jListLocais;
-    private javax.swing.JList jListLocais1;
-    private javax.swing.JList jListLocais2;
     private javax.swing.JList jListProdutos;
     private javax.swing.JList jListProdutosEncomendas;
     private javax.swing.JList jListRotas;
-    private javax.swing.JList jListRotas1;
-    private javax.swing.JList jListRotas2;
     private javax.swing.JRadioButton jRadioButtonActivasInactivas;
     private javax.swing.JRadioButton jRadioButtonActivosInactivos;
     private javax.swing.JRadioButton jRadioButtonMotoristaOparmazem;
@@ -906,19 +958,11 @@ public class OCP extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPaneEncomendas;
     private javax.swing.JScrollPane jScrollPaneFuncionarios;
     private javax.swing.JScrollPane jScrollPaneLocais;
-    private javax.swing.JScrollPane jScrollPaneLocais1;
-    private javax.swing.JScrollPane jScrollPaneLocais2;
     private javax.swing.JScrollPane jScrollPaneProdutos;
     private javax.swing.JScrollPane jScrollPaneProdutosEncomendas;
     private javax.swing.JScrollPane jScrollPaneRotas;
-    private javax.swing.JScrollPane jScrollPaneRotas1;
-    private javax.swing.JScrollPane jScrollPaneRotas2;
     private javax.swing.JTextPane jTextPaneAprovacao;
-    private javax.swing.JTextPane jTextPaneAprovacao1;
-    private javax.swing.JTextPane jTextPaneAprovacao2;
     private javax.swing.JTextPane jTextPaneDataHora;
-    private javax.swing.JTextPane jTextPaneDataHora1;
-    private javax.swing.JTextPane jTextPaneDataHora2;
     private javax.swing.JTextPane jTextPaneDataHoraEncomenda;
     private javax.swing.JTextPane jTextPaneDataNascimento;
     private javax.swing.JTextPane jTextPaneEncomenda;
@@ -933,12 +977,8 @@ public class OCP extends javax.swing.JFrame {
     private javax.swing.JTextPane jTextPanePreco;
     private javax.swing.JTextPane jTextPaneProduto;
     private javax.swing.JTextPane jTextPaneRotaID;
-    private javax.swing.JTextPane jTextPaneRotaID1;
-    private javax.swing.JTextPane jTextPaneRotaID2;
     private javax.swing.JTextPane jTextPaneSessao;
     private javax.swing.JTextPane jTextPaneSessao1;
-    private javax.swing.JTextPane jTextPaneSessao2;
-    private javax.swing.JTextPane jTextPaneSessao3;
     private javax.swing.JTextPane jTextPaneSessao4;
     private javax.swing.JTextPane jTextPaneSessao5;
     private javax.swing.JTextPane jTextPaneSessao7;

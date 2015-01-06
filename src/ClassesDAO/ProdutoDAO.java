@@ -11,6 +11,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -19,9 +21,9 @@ import java.util.TreeSet;
 public class ProdutoDAO implements Map<Integer, Produto> {
     private int idarmazem;
     private int idencomenda;
+    
+    public ProdutoDAO() {
         
-    public ProdutoDAO(int id_armazem) {
-        this.idarmazem=id_armazem;
     }
     //VER ISTO
     public ProdutoDAO(int id_armazem, int id_encomenda) {
@@ -32,7 +34,7 @@ public class ProdutoDAO implements Map<Integer, Produto> {
         int res = 0;
         try {
             Statement stm = ConexaoBD.getConexao().createStatement();
-            String sql = "SELECT * FROM Produto WHERE a_id_armazem = "+this.idarmazem + " and e_id_encomenda=" + this.idencomenda;
+            String sql = "SELECT * FROM Produto"; //WHERE a_id_armazem = "+this.idarmazem + " and e_id_encomenda=" + this.idencomenda;
             ResultSet rs = stm.executeQuery(sql);
             
             while(rs.next())
@@ -64,7 +66,7 @@ public class ProdutoDAO implements Map<Integer, Produto> {
         boolean res = false;
         try {
             Integer id = (Integer) key;
-            String sql = "SELECT * FROM PRODUTO p WHERE p.id_produto = "+id;
+            String sql = "SELECT * FROM PRODUTO"; //WHERE p.id_produto = "+id;
             Statement stm = ConexaoBD.getConexao().createStatement();
             ResultSet rs = stm.executeQuery(sql);
             res = rs.next();
@@ -95,10 +97,13 @@ public class ProdutoDAO implements Map<Integer, Produto> {
     public Produto put(Integer key, Produto value) {
         Produto prod = null;
         CallableStatement cs = null;
+        CallableStatement cs2 = null;
         int id_produto=0;
         String id = "select id_produto.NEXTVAL from dual";
+        
+        String sql2 = "{call escolhe_encomenda}";
         try {
-            String sql = "{call adiciona_produto(?,?,?,?,?,?,?,?)}";
+            String sql = "{call adiciona_produto(?,'?',?,'?','?',?,?,?)}";
             
             PreparedStatement pst = ConexaoBD.getConexao().prepareStatement(id); //SERVE PARA CHAMAR AS SEQUENCIAS
             synchronized( this ) {
@@ -106,6 +111,10 @@ public class ProdutoDAO implements Map<Integer, Produto> {
                 if(rs.next())
                     id_produto = rs.getInt(1);
             }
+            
+            cs2 = ConexaoBD.getConexao().prepareCall(sql2);
+            int encomenda=cs2.executeUpdate();
+            
             cs = ConexaoBD.getConexao().prepareCall(sql);
             cs.setInt(1,id_produto);
             cs.setString(2, value.getNome());
@@ -114,8 +123,8 @@ public class ProdutoDAO implements Map<Integer, Produto> {
             cs.setString(5, value.getDescricao());
             cs.setInt(6, value.getActivo());
             cs.setInt(7, value.getArmazem_id_armazem());
-            cs.setInt(8, value.getEncomenda_id_encomenda());
-            cs.execute();
+            cs.setInt(8, encomenda);
+            cs.executeUpdate();
             
             prod = value;
             cs.close();

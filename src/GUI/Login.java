@@ -136,11 +136,12 @@ public class Login extends javax.swing.JFrame {
         // TODO add your handling code here:
         String login = jTextFieldUser.getText();
         String pass = jPasswordFieldPass.getText();
-
+        
         Boolean ligado = sistema.ligaFuncionario(login, pass);
         if(ligado){
             JOptionPane.showMessageDialog(null, "Bem vindo ");
-            new OCP().setVisible(true);
+            new OCP(sistema).setVisible(true);
+            sistema.setActivo(login);
             this.setVisible(false);
         }
         else{

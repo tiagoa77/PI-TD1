@@ -9,6 +9,7 @@ import ClassesDAO.ArmazemDAO;
 import ClassesDAO.ConexaoBD;
 import ClassesDAO.RotaDAO;
 import ClassesDAO.LoginDAO;
+import ClassesDAO.ProdutoDAO;
 import java.util.Map;
 
 /**
@@ -20,11 +21,15 @@ public class Sistema {
     private Map<Integer, Armazem> armazens;
     private Map<Integer, Rota> rotas;
     private Map<Integer, Login> logins;
+    private Map<Integer, Produto> produtos;
+    private String activo;
 
     public Sistema() {
         this.armazens = new ArmazemDAO();
         this.rotas = new RotaDAO();
         this.logins = new LoginDAO();
+        this.produtos=new ProdutoDAO();
+        this.activo = null;
         ConexaoBD.iniciarConexao();
     }
 
@@ -39,8 +44,32 @@ public class Sistema {
     public Map<Integer, Login> getLogins() {
         return logins;
     }
-    
 
+    public Map<Integer, Produto> getProdutos() {
+        return produtos;
+    }
+    
+    public int addProduto(int id,Produto p){
+        for (Integer i : this.produtos.keySet()) {
+            if (this.produtos.get(i).equals(p)) {
+                return -1;
+            }
+        }
+        this.produtos.put(id, p);
+        return 1;
+    }
+    
+    
+    
+    public String getActivo(){
+        return this.activo;
+        
+    }
+    
+    public void setActivo(String user){
+        this.activo=user;
+    }
+    
     public int keyLogin(String login) {
         int key = 0;
         for (int l : this.logins.keySet()) {
@@ -53,7 +82,11 @@ public class Sistema {
         }
         return key;
     }
-
+    
+    public String userActivo(int key){
+        return this.logins.get(key).getUser();
+    }
+    
     public boolean validaLogin(String login, String password) {
         int key = keyLogin(login);
         

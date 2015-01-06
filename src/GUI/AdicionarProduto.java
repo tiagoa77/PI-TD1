@@ -5,7 +5,9 @@
  */
 package GUI;
 
+import Classes.Produto;
 import Classes.Sistema;
+import java.awt.HeadlessException;
 import javax.swing.JOptionPane;
 
 /**
@@ -33,39 +35,39 @@ public class AdicionarProduto extends javax.swing.JDialog {
     private void initComponents() {
 
         jLabelImagem = new javax.swing.JLabel();
-        jLabelNovoFuncionario = new javax.swing.JLabel();
+        jLabelNovoProduto = new javax.swing.JLabel();
         jLabelNome = new javax.swing.JLabel();
         jTextFieldNome = new javax.swing.JTextField();
-        jLabelDataNascimento = new javax.swing.JLabel();
-        jTextFieldDataNascimento = new javax.swing.JTextField();
-        jLabelContacto = new javax.swing.JLabel();
-        jTextFieldContacto = new javax.swing.JTextField();
-        jLabelFuncao = new javax.swing.JLabel();
-        jTextFieldFuncao = new javax.swing.JTextField();
+        jLabelTipo = new javax.swing.JLabel();
+        jTextFieldTipo = new javax.swing.JTextField();
+        jLabelPreco = new javax.swing.JLabel();
+        jTextFieldPreco = new javax.swing.JTextField();
+        jLabelDescricao = new javax.swing.JLabel();
+        jTextFieldDescricao = new javax.swing.JTextField();
         jButtonRegistar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabelImagem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/logo.png"))); // NOI18N
 
-        jLabelNovoFuncionario.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabelNovoFuncionario.setText("Novo Produto");
+        jLabelNovoProduto.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabelNovoProduto.setText("Novo Produto");
 
         jLabelNome.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabelNome.setText("Nome:");
 
-        jLabelDataNascimento.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabelDataNascimento.setText("Tipo:");
+        jLabelTipo.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabelTipo.setText("Tipo:");
 
-        jLabelContacto.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabelContacto.setText("Preço:");
+        jLabelPreco.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabelPreco.setText("Preço:");
 
-        jLabelFuncao.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabelFuncao.setText("Descrição");
+        jLabelDescricao.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabelDescricao.setText("Descrição");
 
-        jTextFieldFuncao.addActionListener(new java.awt.event.ActionListener() {
+        jTextFieldDescricao.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextFieldFuncaoActionPerformed(evt);
+                jTextFieldDescricaoActionPerformed(evt);
             }
         });
 
@@ -89,27 +91,27 @@ public class AdicionarProduto extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jLabelNovoFuncionario))
+                                .addComponent(jLabelNovoProduto))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(33, 33, 33)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabelDataNascimento)
+                                        .addComponent(jLabelTipo)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jTextFieldDataNascimento, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jTextFieldTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(jButtonRegistar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabelContacto)
+                                        .addComponent(jLabelPreco)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jTextFieldContacto, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jTextFieldPreco, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabelNome, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(jTextFieldNome, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabelFuncao)
+                                        .addComponent(jLabelDescricao)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jTextFieldFuncao, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                        .addComponent(jTextFieldDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                         .addGap(0, 21, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -119,27 +121,27 @@ public class AdicionarProduto extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jLabelImagem, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(2, 2, 2)
-                .addComponent(jLabelNovoFuncionario, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabelNovoProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelNome, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextFieldNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabelDataNascimento, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextFieldDataNascimento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabelTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextFieldTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabelContacto, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextFieldContacto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabelPreco, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextFieldPreco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabelFuncao, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabelDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 25, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(7, 7, 7)
-                        .addComponent(jTextFieldFuncao)))
+                        .addComponent(jTextFieldDescricao)))
                 .addGap(18, 18, 18)
                 .addComponent(jButtonRegistar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -148,30 +150,49 @@ public class AdicionarProduto extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextFieldFuncaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldFuncaoActionPerformed
+    private void jTextFieldDescricaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldDescricaoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldFuncaoActionPerformed
+    }//GEN-LAST:event_jTextFieldDescricaoActionPerformed
 
     private void jButtonRegistarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRegistarActionPerformed
         // TODO add your handling code here:
+        try {
+            // TODO add your handling code here:
 
-        JOptionPane.showMessageDialog(null, "Registado com sucesso");
-        this.setVisible(false);
+            String nome = jTextFieldNome.getText();
+            String tipo = jTextFieldTipo.getText();
+            String aux = jTextFieldPreco.getText();
+            Double preco = Double.parseDouble(aux);
+            String descricao = jTextFieldDescricao.getText();
+            int id=0;
+
+            Produto novo = new Produto(id,nome, preco, tipo,descricao ,1,1,0);
+            
+            if (this.sistema.addProduto(novo.getId_produto(),novo) == 1) {
+                JOptionPane.showMessageDialog(null, "Adicionado com Sucesso");
+                System.out.println(novo.toString());
+                this.setVisible(false);
+
+            } else {
+                JOptionPane.showMessageDialog(null, "Erro");
+            }
+        } catch (NumberFormatException | HeadlessException ex) {
+        }
     }//GEN-LAST:event_jButtonRegistarActionPerformed
 
    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonRegistar;
-    private javax.swing.JLabel jLabelContacto;
-    private javax.swing.JLabel jLabelDataNascimento;
-    private javax.swing.JLabel jLabelFuncao;
+    private javax.swing.JLabel jLabelDescricao;
     private javax.swing.JLabel jLabelImagem;
     private javax.swing.JLabel jLabelNome;
-    private javax.swing.JLabel jLabelNovoFuncionario;
-    private javax.swing.JTextField jTextFieldContacto;
-    private javax.swing.JTextField jTextFieldDataNascimento;
-    private javax.swing.JTextField jTextFieldFuncao;
+    private javax.swing.JLabel jLabelNovoProduto;
+    private javax.swing.JLabel jLabelPreco;
+    private javax.swing.JLabel jLabelTipo;
+    private javax.swing.JTextField jTextFieldDescricao;
     private javax.swing.JTextField jTextFieldNome;
+    private javax.swing.JTextField jTextFieldPreco;
+    private javax.swing.JTextField jTextFieldTipo;
     // End of variables declaration//GEN-END:variables
 }
