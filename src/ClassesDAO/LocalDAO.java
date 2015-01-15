@@ -5,7 +5,7 @@
  */
 package ClassesDAO;
 
-import Classes.Cliente;
+import Classes.Local;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,27 +20,20 @@ import java.util.TreeSet;
  *
  * @author Tiago
  */
-public class ClienteDAO implements Map<Integer,Cliente>{
-    private int idcliente;
-    
-    public ClienteDAO() {
-     
-    }
-    
-    public ClienteDAO(int id_cliente) {
-        this.idcliente=id_cliente;
-    }
+public class LocalDAO implements Map<Integer,Local>{
 
     @Override
     public int size() {
         int res = 0;
         try {
             Statement stm = ConexaoBD.getConexao().createStatement();
-            String sql = "SELECT * FROM Cliente where activo=1"; //WHERE a_id_armazem = "+this.idarmazem + " and e_id_encomenda=" + this.idencomenda;
+            String sql = "SELECT * FROM Local";
             ResultSet rs = stm.executeQuery(sql);
+
             while (rs.next()) {
                 res++;
             }
+
             ConexaoBD.fecharCursor(rs, stm);
         } catch (SQLException e) {
         }
@@ -52,7 +45,7 @@ public class ClienteDAO implements Map<Integer,Cliente>{
         boolean res = false;
         try {
             Statement stm = ConexaoBD.getConexao().createStatement();
-            String sql = "SELECT * FROM Cliente where activo=1";
+            String sql = "SELECT * FROM Local";
             ResultSet rs = stm.executeQuery(sql);
             if (!rs.next()) {
                 res = true;
@@ -68,7 +61,7 @@ public class ClienteDAO implements Map<Integer,Cliente>{
         boolean res = false;
         try {
             Integer id = (Integer) key;
-            String sql = "SELECT * FROM Cliente where activo=1 and id_cliente= "+id;
+            String sql = "SELECT * FROM Local where id_local="+id;
             Statement stm = ConexaoBD.getConexao().createStatement();
             ResultSet rs = stm.executeQuery(sql);
             res = rs.next();
@@ -84,67 +77,62 @@ public class ClienteDAO implements Map<Integer,Cliente>{
     }
 
     @Override
-    public Cliente get(Object key) {
-        Cliente c = null;
+    public Local get(Object key) {
+        Local l = null;
         try {
             Integer id = (Integer) key;
             Statement stm = ConexaoBD.getConexao().createStatement();
-            String sql = "SELECT * FROM Cliente WHERE id_cliente= " + id;
+            String sql = "SELECT * FROM Local WHERE id_local= " + id;
             ResultSet rs = stm.executeQuery(sql);
 
             if (rs.next()) {
-                c = new Cliente(id, rs.getString(2), rs.getString(3), rs.getInt(4), rs.getInt(5), rs.getInt(6), rs.getInt(7));
-                
+                l = new Local(id, rs.getString(2), rs.getString(3));
             }
             ConexaoBD.fecharCursor(rs, stm);
         } catch (SQLException e) {
         }
-        return c;
+        return l;
     }
 
     @Override
-    public Cliente put(Integer key, Cliente value) {
-        Cliente c = null;
+    public Local put(Integer key, Local value) {
+        Local l = null;
         CallableStatement cs = null;
-        int id_cliente = 0;
-        String id = "select id_cliente.NEXTVAL from dual";
+        int id_local = 0;
+        String id = "select id_local.NEXTVAL from dual";
 
         try {
-            String sql = "{call adiciona_cliente(?,?,?,?,?,?,?)}";
+            String sql = "{call adiciona_local(?,?,?)}";
             
-            PreparedStatement pst = ConexaoBD.getConexao().prepareStatement(id);
+            PreparedStatement pst = ConexaoBD.getConexao().prepareStatement(id); //SERVE PARA CHAMAR AS SEQUENCIAS
             synchronized (this) {
                 ResultSet rs = pst.executeQuery();
                 if (rs.next()) {
-                    id_cliente = rs.getInt(1);
+                    id_local = rs.getInt(1);
                 }
             }
             
             cs = ConexaoBD.getConexao().prepareCall(sql);
-            cs.setInt(1, id_cliente);
-            cs.setString(2, value.getNome_farmacia());
-            cs.setString(3, value.getNome_farmaceutico());
-            cs.setInt(4, value.getContacto());
-            cs.setInt(5, value.getNif());
-            cs.setInt(6, value.getActivo());
-            cs.setInt(7, value.getLocal_id_local());
+            cs.setInt(1, id_local);
+            cs.setString(2, value.getMorada());
+            cs.setString(3, value.getConcelho());
             cs.executeUpdate();
-            c = value;
+            l = value;
             cs.close();
         } catch (SQLException e) {
         }
-        return c;
+        return l;
     }
 
     @Override
-    public Cliente remove(Object key) {
-        Cliente c = null;
+    public Local remove(Object key) {
+        Local l = null;
 
         CallableStatement cs = null;
         ResultSet rs = null;
         try {
             Integer id = (Integer) key;
-            String sql = "{call remove_cliente(?)}";
+            String sql = "{call remove_local(?)}";
             cs = ConexaoBD.getConexao().prepareCall(sql);
             cs.setInt(1, id);
             cs.execute();
@@ -152,11 +140,11 @@ public class ClienteDAO implements Map<Integer,Cliente>{
 
         } catch (SQLException e) {
         }
-        return c;
+        return l;
     }
 
     @Override
-    public void putAll(Map<? extends Integer, ? extends Cliente> m) {
+    public void putAll(Map<? extends Integer, ? extends Local> m) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -169,9 +157,10 @@ public class ClienteDAO implements Map<Integer,Cliente>{
     public Set<Integer> keySet() {
         Set<Integer> res = new TreeSet<>();
         try {
-            String sql = "SELECT * FROM Cliente WHERE activo = 1";
+            String sql = "SELECT * FROM Local";
             Statement stm = ConexaoBD.getConexao().createStatement();
             ResultSet rs = stm.executeQuery(sql);
+
             while (rs.next()) {
                 res.add(rs.getInt(1));
             }
@@ -184,12 +173,12 @@ public class ClienteDAO implements Map<Integer,Cliente>{
     }
 
     @Override
-    public Collection<Cliente> values() {
+    public Collection<Local> values() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Set<Entry<Integer, Cliente>> entrySet() {
+    public Set<Entry<Integer, Local>> entrySet() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
