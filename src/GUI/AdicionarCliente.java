@@ -5,8 +5,6 @@
  */
 package GUI;
 
-import Classes.Cliente;
-import Classes.Local;
 import Classes.Sistema;
 import javax.swing.JOptionPane;
 
@@ -15,16 +13,14 @@ import javax.swing.JOptionPane;
  * @author Tiago
  */
 public class AdicionarCliente extends javax.swing.JDialog {
-
     Sistema sistema;
-
     /**
      * Creates new form AdicionarCliente
      */
     public AdicionarCliente(Sistema s) {
-
+        
         initComponents();
-        this.sistema = s;
+        this.sistema=s;
     }
 
     /**
@@ -49,11 +45,8 @@ public class AdicionarCliente extends javax.swing.JDialog {
         jTextFieldNIF = new javax.swing.JTextField();
         jLabeMorada = new javax.swing.JLabel();
         jTextFieldMorada = new javax.swing.JTextField();
-        jLabeConcelho = new javax.swing.JLabel();
-        jTextFieldConcelho = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setModal(true);
 
         jLabelNovoCliente.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabelNovoCliente.setText("Novo Cliente");
@@ -82,15 +75,6 @@ public class AdicionarCliente extends javax.swing.JDialog {
         jLabeMorada.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabeMorada.setText("Morada:");
 
-        jLabeConcelho.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabeConcelho.setText("Concelho");
-
-        jTextFieldConcelho.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextFieldConcelhoActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -108,10 +92,6 @@ public class AdicionarCliente extends javax.swing.JDialog {
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(33, 33, 33)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabeConcelho)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jTextFieldConcelho, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabelNomeFarmaceutico)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -163,11 +143,7 @@ public class AdicionarCliente extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabeMorada, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextFieldMorada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabeConcelho, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextFieldConcelho, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 65, Short.MAX_VALUE)
                 .addComponent(jButtonRegistar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -176,36 +152,15 @@ public class AdicionarCliente extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonRegistarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRegistarActionPerformed
-        String nomeFarmacia = jTextFieldNome.getText();
-        String nomeResp = jTextFieldNomeFarmaceutico.getText();
-        int contacto = Integer.parseInt(jTextFieldContacto.getText());
-        int nif = Integer.parseInt(jTextFieldNIF.getText());
-        String morada = jTextFieldMorada.getText();
-        String concelho = jTextFieldConcelho.getText();
-        int id = 0;
-        int id_local = 0;
-
-        Local novoL = new Local(id, morada, concelho);
-        Cliente novoC = new Cliente(id, nomeFarmacia, nomeResp, contacto, nif, 1, id_local);
-
-        if (this.sistema.addLocal(novoL.getId_local(), novoL) == 1) {
-            if (this.sistema.addCliente(novoC.getId_cliente(), novoC) == 1) {
-                JOptionPane.showMessageDialog(null, "Adicionado com Sucesso");
-                this.setVisible(false);
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Erro");
-        }
+        // TODO add your handling code here:
+        
+        JOptionPane.showMessageDialog(null, "Registado com sucesso");
+        this.setVisible(false);
     }//GEN-LAST:event_jButtonRegistarActionPerformed
 
-    private void jTextFieldConcelhoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldConcelhoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldConcelhoActionPerformed
-
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonRegistar;
-    private javax.swing.JLabel jLabeConcelho;
     private javax.swing.JLabel jLabeMorada;
     private javax.swing.JLabel jLabelContacto;
     private javax.swing.JLabel jLabelImagem;
@@ -213,7 +168,6 @@ public class AdicionarCliente extends javax.swing.JDialog {
     private javax.swing.JLabel jLabelNome;
     private javax.swing.JLabel jLabelNomeFarmaceutico;
     private javax.swing.JLabel jLabelNovoCliente;
-    private javax.swing.JTextField jTextFieldConcelho;
     private javax.swing.JTextField jTextFieldContacto;
     private javax.swing.JTextField jTextFieldMorada;
     private javax.swing.JTextField jTextFieldNIF;

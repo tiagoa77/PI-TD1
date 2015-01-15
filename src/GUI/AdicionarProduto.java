@@ -15,7 +15,7 @@ import javax.swing.JOptionPane;
  * @author Tiago
  */
 public class AdicionarProduto extends javax.swing.JDialog {
-    private final Sistema sistema;
+    Sistema sistema;
     /**
      * Creates new form AdicionarProduto
      */
@@ -47,7 +47,6 @@ public class AdicionarProduto extends javax.swing.JDialog {
         jButtonRegistar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setModal(true);
 
         jLabelImagem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/logo.png"))); // NOI18N
 
@@ -171,7 +170,9 @@ public class AdicionarProduto extends javax.swing.JDialog {
             
             if (this.sistema.addProduto(novo.getId_produto(),novo) == 1) {
                 JOptionPane.showMessageDialog(null, "Adicionado com Sucesso");
+                System.out.println(novo.toString());
                 this.setVisible(false);
+
             } else {
                 JOptionPane.showMessageDialog(null, "Erro");
             }

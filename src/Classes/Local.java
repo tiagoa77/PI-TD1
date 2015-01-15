@@ -12,30 +12,16 @@ package Classes;
 public class Local {
     private int id_local;
     private String morada;
-    private String concelho;
     
     public Local(){
         this.id_local=0;
         this.morada="";
-        this.concelho="";
-    }
-    
-    public Local(int id,String m, String c){
-        this.id_local=id;
-        this.morada=m;
-        this.concelho=c;
     }
     
     public Local(Local l){
         this.id_local=l.getId_local();
-        this.morada=l.getMorada();
-        this.concelho=l.getConcelho();
     }
 
-    public String getConcelho() {
-        return concelho;
-    }
-    
     public int getId_local() {
         return id_local;
     }
@@ -43,20 +29,6 @@ public class Local {
     public String getMorada() {
         return morada;
     }
-
-    public void setId_local(int id_local) {
-        this.id_local = id_local;
-    }
-
-    public void setMorada(String morada) {
-        this.morada = morada;
-    }
-
-    public void setConcelho(String concelho) {
-        this.concelho = concelho;
-    }
-    
-    
     
     public boolean equals(Object obj){
         if(this==obj) return true;

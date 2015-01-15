@@ -5,18 +5,8 @@
  */
 package GUI;
 
-import Classes.Cliente;
-import Classes.Funcionario;
-import Classes.Local;
 import Classes.Produto;
 import Classes.Sistema;
-import ClassesDAO.ConexaoBD;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Set;
-import java.util.TreeSet;
 import javax.swing.DefaultListModel;
 
 /**
@@ -24,22 +14,18 @@ import javax.swing.DefaultListModel;
  * @author Tiago
  */
 public class OCP extends javax.swing.JFrame {
-
-    private final Sistema sistema;
-
+    Sistema sistema;
+    
     /**
      * Creates new form NewJFrame
-     *
-     * @param s
      */
     public OCP(Sistema s) {
         initComponents();
-        this.sistema = s;
+        this.sistema=s;
         this.jTextPaneSessao.setText(this.sistema.getActivo());
         this.jTextPaneSessao7.setText(this.sistema.getActivo());
         listaProdutos();
-        listaFuncionarios();
-        listaClientes();
+        
         
         this.jTextPaneAprovacao.setEditable(false);
         this.jTextPaneDataHora.setEditable(false);
@@ -65,197 +51,31 @@ public class OCP extends javax.swing.JFrame {
         this.jTextPaneTelefone.setEditable(false);
         this.jTextPaneTelefoneFuncionario.setEditable(false);
         this.jTextPaneTipo.setEditable(false);
-
-    }
         
-    private void updateListaFuncionarios()  {
-        if (jCheckBoxMotorista.isSelected() && jCheckBoxOperador.isSelected()) {
-            listaFuncionarios();
-        }else if(jCheckBoxMotorista.isSelected()){
-            listaFuncionariosMotoristas();
-        }else if(jCheckBoxOperador.isSelected()){
-            listaFuncionariosOperadores();
-        }else{
-            listaFuncionarios();;
-        }
+        
+        
+        
     }
     
-    private void updateListaClientes()  {
-        if (jRadioButtonClientesActivosInactivos.isSelected()) {
-            listaClientesInativos();
-        }else
-            listaClientes();
-    }
-    
-    private void atualizaCliente(int key,Cliente c){
-        try {
-            String sql = "UPDATE Cliente SET" +
-                         " NomeFarmacia = '" +c.getNome_farmacia()+
-                         "',NomeFarmaceutico= '" +c.getNome_farmaceutico()+
-                         "',Contacto = " +c.getContacto()+
-                         " ,Nif = " + c.getNif()+
-                         " WHERE id_cliente ="+key;
-            PreparedStatement stm = ConexaoBD.getConexao().prepareStatement(sql);
-            stm.executeUpdate();
-            stm.close();
-        } catch (SQLException e) { }
-    }
-    
-    private void atualizaLocal(int key,Local l){
-        try {
-            String sql = "UPDATE Local SET" +
-                         " Morada = '" +l.getMorada()+
-                         "',Concelho= '" +l.getConcelho()+
-                         " WHERE id_local="+key;
-            PreparedStatement stm = ConexaoBD.getConexao().prepareStatement(sql);
-            stm.executeUpdate();
-            stm.close();
-        } catch (SQLException e) { }
-    }
-    
-    private void atualizaFuncionario(int key,Funcionario f){
-        try {
-            String sql = "UPDATE Funcionario SET" +
-                         " Nome = '" +f.getNome()+
-                         "',Data_Nasc = '" +f.getData_nasc()+
-                         "',Morada= '" +f.getMorada()+
-                         "',Contacto= " +f.getContacto()+
-                         " ,Funcao= '" +f.getFuncao()+
-                         "' WHERE id_funcionario="+key;
-            PreparedStatement stm = ConexaoBD.getConexao().prepareStatement(sql);
-            stm.executeUpdate();
-            stm.close();
-        } catch (SQLException e) { }
-    }
-
-    public void listaProdutos() {
-        DefaultListModel<String> str = new DefaultListModel<String>();
+    public void listaProdutos(){
+        DefaultListModel<String> str = new DefaultListModel<>();
         for (int i : this.sistema.getProdutos().keySet()) {
             str.addElement(this.sistema.getProdutos().get(i).getNome());
         }
         jListProdutos.setModel(str);
-        jListProdutos.setSelectedIndex(0);
     }
     
-    public void listaClientes(){
-        DefaultListModel<String> str = new DefaultListModel<String>();
-        for(int i : this.sistema.getClientes().keySet()){
-            str.addElement(this.sistema.getClientes().get(i).getNome_farmacia());
-        }
-        jListClientes.setModel(str);
-        jListClientes.setSelectedIndex(0);
-    }
-    
-    public Set<Integer> keysetFuncionariosMotoristas(){
-        Set<Integer> res = new TreeSet<>();
-        try {
-            String sql = "SELECT * FROM Funcionario WHERE activo = 1 and funcao='Motorista'";
-            Statement stm = ConexaoBD.getConexao().createStatement();
-            ResultSet rs = stm.executeQuery(sql);
-
-            while (rs.next()) {
-                res.add(rs.getInt(1));
-            }
-            
-            ConexaoBD.fecharCursor(rs, stm);
-        } catch (SQLException e) {
-        }
-        return res;
-    }
-    
-    public Set<Integer> keysetFuncionariosOperadores(){
-        Set<Integer> res = new TreeSet<>();
-        try {
-            String sql = "SELECT * FROM Funcionario WHERE activo = 1 and funcao='Operador'";
-            Statement stm = ConexaoBD.getConexao().createStatement();
-            ResultSet rs = stm.executeQuery(sql);
-
-            while (rs.next()) {
-                res.add(rs.getInt(1));
-            }
-            
-            ConexaoBD.fecharCursor(rs, stm);
-        } catch (SQLException e) {
-        }
-        return res;
-    }
-    
-    public Set<Integer> keysetClientesInativos(){
-        Set<Integer> res = new TreeSet<>();
-        try {
-            String sql = "SELECT * FROM Cliente WHERE activo = 0";
-            Statement stm = ConexaoBD.getConexao().createStatement();
-            ResultSet rs = stm.executeQuery(sql);
-
-            while (rs.next()) {
-                res.add(rs.getInt(1));
-            }
-            
-            ConexaoBD.fecharCursor(rs, stm);
-        } catch (SQLException e) {
-        }
-        return res;
-    }
-    
-    public void listaFuncionarios() {
-        DefaultListModel<String> str = new DefaultListModel<String>();
-        for (int i : this.sistema.getFuncionarios().keySet()) {
-            str.addElement(this.sistema.getFuncionarios().get(i).getNome());
-        }
-        jListFuncionarios.setModel(str);
-        jListFuncionarios.setSelectedIndex(0);
-    }
-
-    public void listaFuncionariosMotoristas() {
-        DefaultListModel<String> str = new DefaultListModel<String>();
-        for (int i : keysetFuncionariosMotoristas()) {
-            str.addElement(this.sistema.getFuncionarios().get(i).getNome());
-        }
-        jListFuncionarios.setModel(str);
-    }
-    
-    public void listaFuncionariosOperadores() {
-        DefaultListModel<String> str = new DefaultListModel<String>();
-        for (int i : keysetFuncionariosOperadores()) {
-            str.addElement(this.sistema.getFuncionarios().get(i).getNome());
-        }
-        jListFuncionarios.setModel(str);
-    }
-    
-    public void listaClientesInativos(){
-        DefaultListModel<String> str = new DefaultListModel<String>();
-        for(int i : keysetClientesInativos()){
-            str.addElement(this.sistema.getClientes().get(i).getNome_farmacia());
-        }
-        jListClientes.setModel(str);
-        jListClientes.setSelectedIndex(0);
-    }
-    
-
     public String seleccionaProduto() {
         String s = null;
+
         if (jListProdutos.getSelectedIndex() != -1) {
             s = jListProdutos.getSelectedValue().toString();
         }
-        return s;
-    }
 
-    public String seleccionaFuncionario() {
-        String s = null;
-        if (jListFuncionarios.getSelectedIndex() != -1) {
-            s = jListFuncionarios.getSelectedValue().toString();
-        }
+        //listaVoluntarios.clearSelection();
         return s;
     }
     
-    public String seleccionaCliente() {
-        String s = null;
-        if (jListClientes.getSelectedIndex() != -1) {
-            s = jListClientes.getSelectedValue().toString();
-        }
-        return s;
-    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -308,7 +128,7 @@ public class OCP extends javax.swing.JFrame {
         jLabelClientes = new javax.swing.JLabel();
         jScrollPaneClientes = new javax.swing.JScrollPane();
         jListClientes = new javax.swing.JList();
-        jRadioButtonClientesActivosInactivos = new javax.swing.JRadioButton();
+        jRadioButtonActivosInactivos = new javax.swing.JRadioButton();
         jButtonAdicionar = new javax.swing.JButton();
         jButtonRemover = new javax.swing.JButton();
         jLabelInformacao = new javax.swing.JLabel();
@@ -324,8 +144,6 @@ public class OCP extends javax.swing.JFrame {
         jLabelNomeMorada = new javax.swing.JLabel();
         jButtonEditar = new javax.swing.JButton();
         jButtonGuardar = new javax.swing.JButton();
-        jTextPaneConcelho = new javax.swing.JTextPane();
-        jLabelNomeMorada1 = new javax.swing.JLabel();
         Funcionarios = new javax.swing.JPanel();
         jLabelSessao5 = new javax.swing.JLabel();
         jTextPaneSessao5 = new javax.swing.JTextPane();
@@ -333,6 +151,7 @@ public class OCP extends javax.swing.JFrame {
         jScrollPaneFuncionarios = new javax.swing.JScrollPane();
         jListFuncionarios = new javax.swing.JList();
         jLabelFuncionarios = new javax.swing.JLabel();
+        jRadioButtonMotoristaOparmazem = new javax.swing.JRadioButton();
         jButtonAdicionarFuncionario = new javax.swing.JButton();
         jButtonRemoverFuncionario = new javax.swing.JButton();
         jLabelInformacao1 = new javax.swing.JLabel();
@@ -348,8 +167,6 @@ public class OCP extends javax.swing.JFrame {
         jLabelNomeMoradaFuncionario = new javax.swing.JLabel();
         jButtonEditarFuncionario = new javax.swing.JButton();
         jButtonGuardarFuncionario = new javax.swing.JButton();
-        jCheckBoxMotorista = new javax.swing.JCheckBox();
-        jCheckBoxOperador = new javax.swing.JCheckBox();
         Produtos = new javax.swing.JPanel();
         jLabelProdutos = new javax.swing.JLabel();
         jScrollPaneProdutos = new javax.swing.JScrollPane();
@@ -593,19 +410,9 @@ public class OCP extends javax.swing.JFrame {
 
         jLabelClientes.setText("Clientes");
 
-        jListClientes.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                jListClientesValueChanged(evt);
-            }
-        });
         jScrollPaneClientes.setViewportView(jListClientes);
 
-        jRadioButtonClientesActivosInactivos.setText("Activos/Inactivos");
-        jRadioButtonClientesActivosInactivos.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButtonClientesActivosInactivosActionPerformed(evt);
-            }
-        });
+        jRadioButtonActivosInactivos.setText("Activos/Inactivos");
 
         jButtonAdicionar.setText("Adicionar");
         jButtonAdicionar.addActionListener(new java.awt.event.ActionListener() {
@@ -632,8 +439,6 @@ public class OCP extends javax.swing.JFrame {
 
         jButtonGuardar.setText("Guardar");
 
-        jLabelNomeMorada1.setText("Concelho");
-
         javax.swing.GroupLayout ClientesLayout = new javax.swing.GroupLayout(Clientes);
         Clientes.setLayout(ClientesLayout);
         ClientesLayout.setHorizontalGroup(
@@ -641,7 +446,7 @@ public class OCP extends javax.swing.JFrame {
             .addGroup(ClientesLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(ClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jRadioButtonClientesActivosInactivos)
+                    .addComponent(jRadioButtonActivosInactivos)
                     .addGroup(ClientesLayout.createSequentialGroup()
                         .addComponent(jLabelSessao4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -675,18 +480,13 @@ public class OCP extends javax.swing.JFrame {
                                 .addGroup(ClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jTextPaneTelefone, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabelNomeTelefone, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(ClientesLayout.createSequentialGroup()
-                                .addGroup(ClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTextPaneMorada, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabelNomeMorada, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(ClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabelNomeMorada1, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextPaneConcelho, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(ClientesLayout.createSequentialGroup()
-                                .addComponent(jButtonEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButtonGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                            .addGroup(ClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(ClientesLayout.createSequentialGroup()
+                                    .addComponent(jButtonEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(jButtonGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jTextPaneMorada, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabelNomeMorada, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(19, Short.MAX_VALUE))
         );
         ClientesLayout.setVerticalGroup(
@@ -725,19 +525,15 @@ public class OCP extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jTextPaneTelefone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(ClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabelNomeMorada, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabelNomeMorada1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabelNomeMorada, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(ClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextPaneConcelho, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextPaneMorada, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                        .addComponent(jTextPaneMorada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(24, 24, 24)
                         .addGroup(ClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jButtonEditar)
                             .addComponent(jButtonGuardar))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jRadioButtonClientesActivosInactivos)
+                .addComponent(jRadioButtonActivosInactivos)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(ClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonAdicionar)
@@ -751,14 +547,11 @@ public class OCP extends javax.swing.JFrame {
 
         jLabelImagem5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/logo.png"))); // NOI18N
 
-        jListFuncionarios.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                jListFuncionariosValueChanged(evt);
-            }
-        });
         jScrollPaneFuncionarios.setViewportView(jListFuncionarios);
 
         jLabelFuncionarios.setText("Funcionários");
+
+        jRadioButtonMotoristaOparmazem.setText("Motorista/Op.Armazém");
 
         jButtonAdicionarFuncionario.setText("Adicionar");
         jButtonAdicionarFuncionario.addActionListener(new java.awt.event.ActionListener() {
@@ -768,11 +561,6 @@ public class OCP extends javax.swing.JFrame {
         });
 
         jButtonRemoverFuncionario.setText("Remover");
-        jButtonRemoverFuncionario.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonRemoverFuncionarioActionPerformed(evt);
-            }
-        });
 
         jLabelInformacao1.setText("Informação Geral");
 
@@ -787,32 +575,8 @@ public class OCP extends javax.swing.JFrame {
         jLabelNomeMoradaFuncionario.setText("Morada:");
 
         jButtonEditarFuncionario.setText("Editar");
-        jButtonEditarFuncionario.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonEditarFuncionarioActionPerformed(evt);
-            }
-        });
 
         jButtonGuardarFuncionario.setText("Guardar");
-        jButtonGuardarFuncionario.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonGuardarFuncionarioActionPerformed(evt);
-            }
-        });
-
-        jCheckBoxMotorista.setText("Motorista");
-        jCheckBoxMotorista.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBoxMotoristaActionPerformed(evt);
-            }
-        });
-
-        jCheckBoxOperador.setText("Operador");
-        jCheckBoxOperador.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBoxOperadorActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout FuncionariosLayout = new javax.swing.GroupLayout(Funcionarios);
         Funcionarios.setLayout(FuncionariosLayout);
@@ -821,10 +585,6 @@ public class OCP extends javax.swing.JFrame {
             .addGroup(FuncionariosLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(FuncionariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(FuncionariosLayout.createSequentialGroup()
-                        .addComponent(jCheckBoxMotorista)
-                        .addGap(18, 18, 18)
-                        .addComponent(jCheckBoxOperador))
                     .addComponent(jLabelFuncionarios, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(FuncionariosLayout.createSequentialGroup()
                         .addGroup(FuncionariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -840,6 +600,7 @@ public class OCP extends javax.swing.JFrame {
                 .addGroup(FuncionariosLayout.createSequentialGroup()
                     .addGap(14, 14, 14)
                     .addGroup(FuncionariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jRadioButtonMotoristaOparmazem)
                         .addGroup(FuncionariosLayout.createSequentialGroup()
                             .addComponent(jButtonAdicionarFuncionario)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -885,11 +646,7 @@ public class OCP extends javax.swing.JFrame {
                 .addComponent(jLabelFuncionarios, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPaneFuncionarios, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(FuncionariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBoxMotorista)
-                    .addComponent(jCheckBoxOperador))
-                .addContainerGap(43, Short.MAX_VALUE))
+                .addContainerGap(73, Short.MAX_VALUE))
             .addGroup(FuncionariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(FuncionariosLayout.createSequentialGroup()
                     .addGap(69, 69, 69)
@@ -922,7 +679,9 @@ public class OCP extends javax.swing.JFrame {
                     .addGroup(FuncionariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jButtonEditarFuncionario)
                         .addComponent(jButtonGuardarFuncionario))
-                    .addGap(76, 76, 76)
+                    .addGap(46, 46, 46)
+                    .addComponent(jRadioButtonMotoristaOparmazem)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                     .addGroup(FuncionariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jButtonAdicionarFuncionario)
                         .addComponent(jButtonRemoverFuncionario))
@@ -960,11 +719,6 @@ public class OCP extends javax.swing.JFrame {
         });
 
         jButtonRemoverProduto.setText("Remover");
-        jButtonRemoverProduto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonRemoverProdutoActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout ProdutosLayout = new javax.swing.GroupLayout(Produtos);
         Produtos.setLayout(ProdutosLayout);
@@ -1091,7 +845,6 @@ public class OCP extends javax.swing.JFrame {
     private void jButtonAdicionarFuncionarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAdicionarFuncionarioActionPerformed
         // TODO add your handling code here:
         new AdicionarFuncionario(sistema).setVisible(true);
-        listaFuncionarios();
     }//GEN-LAST:event_jButtonAdicionarFuncionarioActionPerformed
 
     private void jButtonAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAdicionarActionPerformed
@@ -1100,164 +853,35 @@ public class OCP extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonAdicionarActionPerformed
 
     private void jButtonAdicionarProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAdicionarProdutoActionPerformed
+        // TODO add your handling code here:
         new AdicionarProduto(sistema).setVisible(true);
-        listaProdutos();
     }//GEN-LAST:event_jButtonAdicionarProdutoActionPerformed
 
     private void jListProdutosValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jListProdutosValueChanged
         // TODO add your handling code here:
         String aux = seleccionaProduto();
-        Produto v = null;
-        for (int i : this.sistema.getProdutos().keySet()) {
-            if (this.sistema.getProdutos().get(i).getNome().equals(aux)) {
-                v = this.sistema.getProdutos().get(i);
-            }
-        }
-        if (aux != null && v != null) {
-            this.jTextPaneProduto.setText(v.getNome());
-            this.jTextPaneTipo.setText(v.getTipo());
-            StringBuilder sb = new StringBuilder();
-            String preco = Double.toString(v.getPreco());
-            sb.append(preco);
-            sb.append("€");
-            this.jTextPanePreco.setText(sb.toString());
-            this.jTextPaneObservacoes.setText(v.getDescricao());
-        }
-
+        Produto v=null;
+        for(int i : this.sistema.getProdutos().keySet())
+            if(this.sistema.getProdutos().get(i).getNome().equals(aux))
+                v=this.sistema.getProdutos().get(i);
+        
+        
+        this.jTextPaneProduto.setText(v.getNome());
+        this.jTextPaneTipo.setText(v.getTipo());
+        StringBuilder sb = new StringBuilder();
+        String preco = Double.toString(v.getPreco());
+        sb.append(preco);
+        sb.append("€");
+        this.jTextPanePreco.setText(sb.toString());
+        this.jTextPaneObservacoes.setText(v.getDescricao());
+        
     }//GEN-LAST:event_jListProdutosValueChanged
 
-    private void jButtonRemoverProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRemoverProdutoActionPerformed
-        // TODO add your handling code here:
-        int key = 0;
-        for (int i : this.sistema.getProdutos().keySet()) {
-            if (this.sistema.getProdutos().get(i).getNome().equals(seleccionaProduto())) {
-                key = i;
-            }
-        }
-        this.sistema.getProdutos().remove(key);
-        jListProdutos.clearSelection();
-        listaProdutos();
-        this.jTextPaneProduto.setText(null);
-        this.jTextPaneTipo.setText(null);
-        this.jTextPanePreco.setText(null);
-        this.jTextPaneObservacoes.setText(null);
-
-    }//GEN-LAST:event_jButtonRemoverProdutoActionPerformed
-
-    private void jButtonRemoverFuncionarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRemoverFuncionarioActionPerformed
-        // TODO add your handling code here:
-        int key = 0;
-        for (int i : this.sistema.getFuncionarios().keySet()) {
-            if (this.sistema.getFuncionarios().get(i).getNome().equals(seleccionaFuncionario())) {
-                key = i;
-            }
-        }
-        //System.out.println("KEY : " + key);
-        this.sistema.getFuncionarios().remove(key);
-        jListFuncionarios.clearSelection();
-        listaFuncionarios();
-        this.jTextPaneNomeFuncionario.setText(null);
-        this.jTextPaneMoradaFuncionario.setText(null);
-        this.jTextPaneTelefoneFuncionario.setText(null);
-        this.jTextPaneFuncao.setText(null);
-        this.jTextPaneDataNascimento.setText(null);
-    }//GEN-LAST:event_jButtonRemoverFuncionarioActionPerformed
-
-    private void jListFuncionariosValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jListFuncionariosValueChanged
-        // TODO add your handling code here:
-        String aux = seleccionaFuncionario();
-        Funcionario f = null;
-        for (int i : this.sistema.getFuncionarios().keySet()) {
-            if (this.sistema.getFuncionarios().get(i).getNome().equals(aux)) {
-                f = this.sistema.getFuncionarios().get(i);
-            }
-        }
-        if (aux != null && f != null) {
-            this.jTextPaneNomeFuncionario.setText(f.getNome());
-            this.jTextPaneMoradaFuncionario.setText(f.getMorada());
-            String tlf = Integer.toString(f.getContacto());
-            this.jTextPaneTelefoneFuncionario.setText(tlf);
-            this.jTextPaneFuncao.setText(f.getFuncao());
-            this.jTextPaneDataNascimento.setText(f.getData_nasc());
-        }
-    }//GEN-LAST:event_jListFuncionariosValueChanged
-
-    private void jCheckBoxMotoristaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMotoristaActionPerformed
-        updateListaFuncionarios();
-    }//GEN-LAST:event_jCheckBoxMotoristaActionPerformed
-
-    private void jCheckBoxOperadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxOperadorActionPerformed
-        updateListaFuncionarios();
-    }//GEN-LAST:event_jCheckBoxOperadorActionPerformed
-
-    private void jListClientesValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jListClientesValueChanged
-        String aux = seleccionaCliente();
-        Cliente c = null;
-        Local l = null;
-        jButtonGuardar.setVisible(false);
-        for (int i : this.sistema.getClientes().keySet()) {
-            if (this.sistema.getClientes().get(i).getNome_farmacia().equals(aux)) {
-                c = this.sistema.getClientes().get(i);
-            }
-        }
-        
-        for (int i : this.sistema.getLocais().keySet()) {
-            if (this.sistema.getLocais().get(i).getId_local()==c.getLocal_id_local()) {
-                l = this.sistema.getLocais().get(i);
-            }
-        }
-        if (aux != null && c != null && l!=null) {
-            this.jTextPaneNome.setText(c.getNome_farmacia());
-            this.jTextPaneNomeFarmaceutico.setText(c.getNome_farmaceutico());
-            String tlf = Integer.toString(c.getContacto());
-            this.jTextPaneTelefone.setText(tlf);
-            String nif = Integer.toString(c.getNif());
-            this.jTextPaneNIF.setText(nif);
-            this.jTextPaneMorada.setText(l.getMorada());
-            this.jTextPaneConcelho.setText(l.getConcelho());
-        }
-    }//GEN-LAST:event_jListClientesValueChanged
-
-    private void jRadioButtonClientesActivosInactivosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonClientesActivosInactivosActionPerformed
-        updateListaClientes();
-    }//GEN-LAST:event_jRadioButtonClientesActivosInactivosActionPerformed
-
-    private void jButtonEditarFuncionarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarFuncionarioActionPerformed
-        jButtonEditar.setVisible(false);
-        jButtonAdicionar.setVisible(true);
-        
-        jTextPaneNomeFuncionario.setEditable(true);
-        jTextPaneFuncao.setEditable(true);
-        jTextPaneDataNascimento.setEditable(true);
-        jTextPaneTelefoneFuncionario.setEditable(true);
-        jTextPaneMoradaFuncionario.setEditable(true);
-    }//GEN-LAST:event_jButtonEditarFuncionarioActionPerformed
-
-    private void jButtonGuardarFuncionarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGuardarFuncionarioActionPerformed
-        jButtonEditar.setVisible(true);
-        jButtonAdicionar.setVisible(false);
-        
-        jTextPaneNomeFuncionario.setEditable(false);
-        jTextPaneFuncao.setEditable(false);
-        jTextPaneDataNascimento.setEditable(false);
-        jTextPaneTelefoneFuncionario.setEditable(false);
-        jTextPaneMoradaFuncionario.setEditable(false);
-        
-        String aux = seleccionaFuncionario();
-        int id = this.sistema.getFuncionario(aux).getId_funcionario();
-        
-        String nome = jTextPaneNomeFuncionario.getText();
-        String funcao = jTextPaneFuncao.getText();
-        String data = jTextPaneDataNascimento.getText();
-        String tlf = jTextPaneTelefoneFuncionario.getText();
-        int tlfInt = Integer.parseInt(tlf);
-        String morada = jTextPaneMoradaFuncionario.getText();
-        
-        Funcionario f = new Funcionario(id, nome, data, morada, tlfInt, funcao);
-        atualizaFuncionario(id,f);
-        listaFuncionarios();
-    }//GEN-LAST:event_jButtonGuardarFuncionarioActionPerformed
+    /**
+     * @param args the command line arguments
+     */
    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Clientes;
     private javax.swing.JPanel Encomendas;
@@ -1279,8 +903,6 @@ public class OCP extends javax.swing.JFrame {
     private javax.swing.JButton jButtonRemoverFuncionario;
     private javax.swing.JButton jButtonRemoverProduto;
     private javax.swing.JButton jButtonValidar;
-    private javax.swing.JCheckBox jCheckBoxMotorista;
-    private javax.swing.JCheckBox jCheckBoxOperador;
     private javax.swing.JComboBox jComboBoxMotorista;
     private javax.swing.JComboBox jComboBoxVeiculo;
     private javax.swing.JLabel jLabelClientes;
@@ -1307,7 +929,6 @@ public class OCP extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelNomeFarmaceutico;
     private javax.swing.JLabel jLabelNomeFuncionario;
     private javax.swing.JLabel jLabelNomeMorada;
-    private javax.swing.JLabel jLabelNomeMorada1;
     private javax.swing.JLabel jLabelNomeMoradaFuncionario;
     private javax.swing.JLabel jLabelNomeTelefone;
     private javax.swing.JLabel jLabelNomeTelefoneFuncionario;
@@ -1331,7 +952,8 @@ public class OCP extends javax.swing.JFrame {
     private javax.swing.JList jListProdutosEncomendas;
     private javax.swing.JList jListRotas;
     private javax.swing.JRadioButton jRadioButtonActivasInactivas;
-    private javax.swing.JRadioButton jRadioButtonClientesActivosInactivos;
+    private javax.swing.JRadioButton jRadioButtonActivosInactivos;
+    private javax.swing.JRadioButton jRadioButtonMotoristaOparmazem;
     private javax.swing.JScrollPane jScrollPaneClientes;
     private javax.swing.JScrollPane jScrollPaneEncomendas;
     private javax.swing.JScrollPane jScrollPaneFuncionarios;
@@ -1340,7 +962,6 @@ public class OCP extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPaneProdutosEncomendas;
     private javax.swing.JScrollPane jScrollPaneRotas;
     private javax.swing.JTextPane jTextPaneAprovacao;
-    private javax.swing.JTextPane jTextPaneConcelho;
     private javax.swing.JTextPane jTextPaneDataHora;
     private javax.swing.JTextPane jTextPaneDataHoraEncomenda;
     private javax.swing.JTextPane jTextPaneDataNascimento;

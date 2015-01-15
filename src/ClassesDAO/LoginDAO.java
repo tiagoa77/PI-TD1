@@ -67,9 +67,11 @@ public class LoginDAO implements Map<Integer,Login>{
             
             if(rs.next()) {
                 int id = rs.getInt(1);
+                System.out.println("ID:"+id);
                 String user = rs.getString(2);
+                System.out.println("User:"+user);
                 String pass = rs.getString(3);
-                
+                System.out.println("Pass:"+pass);
                 
                 l = new Login(user,pass);
             }            

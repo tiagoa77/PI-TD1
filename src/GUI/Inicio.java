@@ -13,7 +13,7 @@ import javax.swing.JDialog;
  * @author Tiago
  */
 public class Inicio extends javax.swing.JFrame {
-    private final Sistema sistema;
+    Sistema sistema;
     /**
      * Creates new form Inicio
      */
