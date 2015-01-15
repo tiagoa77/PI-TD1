@@ -42,7 +42,7 @@ public class Cliente {
         this.nif=nif;
         this.activo=activo;
         this.local_id_local=id_local;
-        this.encomendas=new EncomendaDAO(this.id_cliente);
+        this.encomendas=new EncomendaDAO();
     }
     
     public Cliente(Cliente c){

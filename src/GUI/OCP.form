@@ -472,7 +472,7 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jRadioButtonActivosInactivos" min="-2" max="-2" attributes="0"/>
+                          <Component id="jRadioButtonClientesActivosInactivos" min="-2" max="-2" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jLabelSessao4" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -515,15 +515,22 @@
                                           <Component id="jLabelNomeTelefone" min="-2" pref="54" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
-                                  <Group type="103" alignment="0" groupAlignment="1" attributes="0">
-                                      <Group type="102" attributes="0">
-                                          <Component id="jButtonEditar" min="-2" pref="73" max="-2" attributes="0"/>
-                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                          <Component id="jButtonGuardar" min="-2" pref="71" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="jTextPaneMorada" alignment="0" min="-2" pref="154" max="-2" attributes="0"/>
+                                          <Component id="jLabelNomeMorada" alignment="0" min="-2" pref="66" max="-2" attributes="0"/>
                                       </Group>
-                                      <Component id="jTextPaneMorada" alignment="0" min="-2" pref="154" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="jLabelNomeMorada1" min="-2" pref="66" max="-2" attributes="0"/>
+                                          <Component id="jTextPaneConcelho" min="-2" pref="154" max="-2" attributes="0"/>
+                                      </Group>
                                   </Group>
-                                  <Component id="jLabelNomeMorada" alignment="0" min="-2" pref="66" max="-2" attributes="0"/>
+                                  <Group type="102" attributes="0">
+                                      <Component id="jButtonEditar" min="-2" pref="73" max="-2" attributes="0"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="jButtonGuardar" min="-2" pref="71" max="-2" attributes="0"/>
+                                  </Group>
                               </Group>
                           </Group>
                       </Group>
@@ -575,10 +582,16 @@
                                   </Group>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="jLabelNomeMorada" min="-2" pref="26" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="jLabelNomeMorada" alignment="3" min="-2" pref="26" max="-2" attributes="0"/>
+                                  <Component id="jLabelNomeMorada1" alignment="3" min="-2" pref="26" max="-2" attributes="0"/>
+                              </Group>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jTextPaneMorada" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jTextPaneConcelho" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jTextPaneMorada" min="-2" pref="57" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="jButtonEditar" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jButtonGuardar" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -586,7 +599,7 @@
                           </Group>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="jRadioButtonActivosInactivos" min="-2" max="-2" attributes="0"/>
+                      <Component id="jRadioButtonClientesActivosInactivos" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jButtonAdicionar" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -625,13 +638,19 @@
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
                 <Component class="javax.swing.JList" name="jListClientes">
+                  <Events>
+                    <EventHandler event="valueChanged" listener="javax.swing.event.ListSelectionListener" parameters="javax.swing.event.ListSelectionEvent" handler="jListClientesValueChanged"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>
-            <Component class="javax.swing.JRadioButton" name="jRadioButtonActivosInactivos">
+            <Component class="javax.swing.JRadioButton" name="jRadioButtonClientesActivosInactivos">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Activos/Inactivos"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jRadioButtonClientesActivosInactivosActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="jButtonAdicionar">
               <Properties>
@@ -696,6 +715,13 @@
                 <Property name="text" type="java.lang.String" value="Guardar"/>
               </Properties>
             </Component>
+            <Component class="javax.swing.JTextPane" name="jTextPaneConcelho">
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabelNomeMorada1">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Concelho"/>
+              </Properties>
+            </Component>
           </SubComponents>
         </Container>
         <Container class="javax.swing.JPanel" name="Funcionarios">
@@ -713,6 +739,11 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Component id="jCheckBoxMotorista" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="jCheckBoxOperador" min="-2" max="-2" attributes="0"/>
+                          </Group>
                           <Component id="jLabelFuncionarios" min="-2" pref="118" max="-2" attributes="0"/>
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -733,7 +764,6 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jRadioButtonMotoristaOparmazem" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="jButtonAdicionarFuncionario" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
@@ -795,7 +825,12 @@
                       <Component id="jLabelFuncionarios" min="-2" pref="26" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="jScrollPaneFuncionarios" min="-2" pref="259" max="-2" attributes="0"/>
-                      <EmptySpace pref="73" max="32767" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jCheckBoxMotorista" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jCheckBoxOperador" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace pref="43" max="32767" attributes="0"/>
                   </Group>
                   <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
@@ -836,9 +871,7 @@
                               <Component id="jButtonEditarFuncionario" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jButtonGuardarFuncionario" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
-                          <Component id="jRadioButtonMotoristaOparmazem" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="76" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="jButtonAdicionarFuncionario" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jButtonRemoverFuncionario" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -872,17 +905,15 @@
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
                 <Component class="javax.swing.JList" name="jListFuncionarios">
+                  <Events>
+                    <EventHandler event="valueChanged" listener="javax.swing.event.ListSelectionListener" parameters="javax.swing.event.ListSelectionEvent" handler="jListFuncionariosValueChanged"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>
             <Component class="javax.swing.JLabel" name="jLabelFuncionarios">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Funcion&#xe1;rios"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JRadioButton" name="jRadioButtonMotoristaOparmazem">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Motorista/Op.Armaz&#xe9;m"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JButton" name="jButtonAdicionarFuncionario">
@@ -897,6 +928,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Remover"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonRemoverFuncionarioActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabelInformacao1">
               <Properties>
@@ -942,11 +976,33 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Editar"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonEditarFuncionarioActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="jButtonGuardarFuncionario">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Guardar"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonGuardarFuncionarioActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JCheckBox" name="jCheckBoxMotorista">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Motorista"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCheckBoxMotoristaActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JCheckBox" name="jCheckBoxOperador">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Operador"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCheckBoxOperadorActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -1134,6 +1190,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Remover"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonRemoverProdutoActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>

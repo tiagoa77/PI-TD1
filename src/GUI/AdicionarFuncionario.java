@@ -5,7 +5,9 @@
  */
 package GUI;
 
+import Classes.Funcionario;
 import Classes.Sistema;
+import java.awt.HeadlessException;
 import javax.swing.JOptionPane;
 
 /**
@@ -13,7 +15,7 @@ import javax.swing.JOptionPane;
  * @author Tiago
  */
 public class AdicionarFuncionario extends javax.swing.JDialog {
-    Sistema sistema;
+    public final Sistema sistema;
     /**
      * Creates new form AdicionarFuncionario
      */
@@ -47,6 +49,7 @@ public class AdicionarFuncionario extends javax.swing.JDialog {
         jButtonRegistar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setModal(true);
 
         jLabelFuncao.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabelFuncao.setText("Função");
@@ -160,8 +163,26 @@ public class AdicionarFuncionario extends javax.swing.JDialog {
     private void jButtonRegistarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRegistarActionPerformed
         // TODO add your handling code here:
 
-        JOptionPane.showMessageDialog(null, "Registado com sucesso");
-        this.setVisible(false);
+        try {
+
+            String nome = jTextFieldNome.getText();
+            String contacto = jTextFieldContacto.getText();
+            int contact = Integer.parseInt(contacto);
+            String funcao = jTextFieldFuncao.getText();
+            String morada = jTextFieldMorada.getText();
+            String dataNasc = jTextFieldDataNascimento.getText();
+            int id=0;
+
+            Funcionario novo = new Funcionario(id,nome,dataNasc,morada,contact,funcao,1,1);
+            
+            if (this.sistema.addFuncionario(novo.getId_funcionario(),novo) == 1) {
+                JOptionPane.showMessageDialog(null, "Adicionado com Sucesso");
+                this.setVisible(false);
+            } else {
+                JOptionPane.showMessageDialog(null, "Erro");
+            }
+        } catch (NumberFormatException | HeadlessException ex) {
+        }
     }//GEN-LAST:event_jButtonRegistarActionPerformed
 
     private void jTextFieldFuncaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldFuncaoActionPerformed
