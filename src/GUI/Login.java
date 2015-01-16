@@ -40,6 +40,7 @@ public class Login extends javax.swing.JFrame {
         jButtonSair = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         jLabelImagem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/logo.png"))); // NOI18N
 
@@ -138,11 +139,11 @@ public class Login extends javax.swing.JFrame {
         String login = jTextFieldUser.getText();
         String pass = jPasswordFieldPass.getText();
         
+        
         Boolean ligado = sistema.ligaFuncionario(login, pass);
         if(ligado){
             JOptionPane.showMessageDialog(null, "Bem vindo ");
-            new OCP(sistema).setVisible(true);
-            sistema.setActivo(login);
+            new OCP(sistema,login).setVisible(true);
             this.setVisible(false);
         }
         else{

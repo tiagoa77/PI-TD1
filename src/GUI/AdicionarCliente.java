@@ -54,6 +54,7 @@ public class AdicionarCliente extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setModal(true);
+        setResizable(false);
 
         jLabelNovoCliente.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabelNovoCliente.setText("Novo Cliente");

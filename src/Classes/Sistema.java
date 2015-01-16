@@ -8,6 +8,7 @@ package Classes;
 import ClassesDAO.ArmazemDAO;
 import ClassesDAO.ClienteDAO;
 import ClassesDAO.ConexaoBD;
+import ClassesDAO.EncomendaDAO;
 import ClassesDAO.FuncionarioDAO;
 import ClassesDAO.LocalDAO;
 import ClassesDAO.RotaDAO;
@@ -28,6 +29,7 @@ public class Sistema {
     private Map<Integer, Funcionario> funcionarios;
     private Map<Integer, Local> locais;
     private Map<Integer, Cliente> clientes;
+    private Map<Integer, Encomenda> encomendas;
     private String activo;
 
     public Sistema() {
@@ -38,6 +40,7 @@ public class Sistema {
         this.funcionarios=new FuncionarioDAO();
         this.locais=new LocalDAO();
         this.clientes= new ClienteDAO();
+        this.encomendas = new EncomendaDAO();
         this.activo = null;
         ConexaoBD.iniciarConexao();
     }
@@ -70,6 +73,9 @@ public class Sistema {
         return clientes;
     }
     
+    public Map<Integer, Encomenda> getEncomendas(){
+        return encomendas;
+    }
     
     
     public int addProduto(int id,Produto p){
@@ -113,8 +119,6 @@ public class Sistema {
     }
     
     
-    
-    
     public String getActivo(){
         return this.activo;
         
@@ -133,6 +137,7 @@ public class Sistema {
         return null;
     }
     
+    
     public Funcionario getFuncionario(String nome) {
         for (int i : this.funcionarios.keySet()) {
             if (this.funcionarios.get(i).getNome().equals(nome)) {
@@ -150,13 +155,7 @@ public class Sistema {
         }
         return null;
     }
-    
-    
-    
-    
-    
-    
-    
+
     
     public int keyLogin(String login) {
         int key = 0;

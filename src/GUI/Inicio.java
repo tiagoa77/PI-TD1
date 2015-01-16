@@ -45,6 +45,7 @@ public class Inicio extends javax.swing.JFrame {
         Sair = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         BemVindo.setFont(new java.awt.Font("OCR A Extended", 2, 56)); // NOI18N
         BemVindo.setText("Bem Vindo");

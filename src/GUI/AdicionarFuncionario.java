@@ -50,6 +50,7 @@ public class AdicionarFuncionario extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setModal(true);
+        setResizable(false);
 
         jLabelFuncao.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabelFuncao.setText("Função");

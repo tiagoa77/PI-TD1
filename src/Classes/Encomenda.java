@@ -31,11 +31,11 @@ public class Encomenda {
     }
     
     public Encomenda(int id, int factura, int banheiras, int activa, int id_cliente){
-        this.id_encomenda=0;
-        this.factura=0;
-        this.banheiras=0;
-        this.activa=0;
-        this.cliente_id_cliente=0;
+        this.id_encomenda=id;
+        this.factura=factura;
+        this.banheiras=banheiras;
+        this.activa=activa;
+        this.cliente_id_cliente=id_cliente;
         //this.produtos=new ProdutoDAO(this.id_encomenda);
     }
     

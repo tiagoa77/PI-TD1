@@ -45,6 +45,14 @@ public class Cliente {
         this.encomendas=new EncomendaDAO();
     }
     
+    public Cliente(int id, String nome_far, String nome_resp, int contac, int nif){
+        this.id_cliente=id;
+        this.nome_farmacia=nome_far;
+        this.nome_farmaceutico=nome_resp;
+        this.contacto=contac;
+        this.nif=nif;
+    }
+    
     public Cliente(Cliente c){
         this.id_cliente=c.getId_cliente();
         this.nome_farmacia=c.getNome_farmacia();

@@ -32,7 +32,7 @@ public class EncomendaDAO implements Map<Integer,Encomenda>{
         int res = 0;
         try {
             Statement stm = ConexaoBD.getConexao().createStatement();
-            String sql = "SELECT * FROM Encomenda  WHERE c_id_cliente= "+this.idcliente+" and activa=1";
+            String sql = "SELECT * FROM Encomenda WHERE activa=1";
             ResultSet rs = stm.executeQuery(sql);
             while(rs.next())
                 res++;    
@@ -47,7 +47,7 @@ public class EncomendaDAO implements Map<Integer,Encomenda>{
         boolean res = false;
         try {
             Statement stm = ConexaoBD.getConexao().createStatement();
-            String sql = "SELECT * FROM Encomenda where c_id_cliente=" + this.idcliente;
+            String sql = "SELECT * FROM Encomenda where activa=1";
             ResultSet rs = stm.executeQuery(sql);
             if(!rs.next())
                 res=true;
@@ -62,7 +62,7 @@ public class EncomendaDAO implements Map<Integer,Encomenda>{
         boolean res = false;
         try {
             int id = (Integer) key;
-            String sql = "SELECT * FROM Encomenda WHERE cd_id_encomenda= "+ this.idcliente + " and id_encomenda = " + id;
+            String sql = "SELECT * FROM Encomenda WHERE id_encomenda = " + id;
             Statement stm = ConexaoBD.getConexao().createStatement();
             ResultSet rs = stm.executeQuery(sql);
             res = rs.next();
@@ -79,7 +79,7 @@ public class EncomendaDAO implements Map<Integer,Encomenda>{
         try {
             int id = (Integer) key;
             Statement stm = ConexaoBD.getConexao().createStatement();
-            String sql = "SELECT * FROM Encomenda WHERE c_id_encomenda = "+this.idcliente+" and id_cliente=" +id + " and activa =1";
+            String sql = "SELECT * FROM Encomenda WHERE id_encomenda=" +id;
             ResultSet rs = stm.executeQuery(sql);
             
             if(rs.next()) {
