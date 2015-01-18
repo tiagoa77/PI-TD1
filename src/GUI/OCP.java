@@ -12,11 +12,13 @@ import Classes.Local;
 import Classes.Produto;
 import Classes.Sistema;
 import ClassesDAO.ConexaoBD;
+import java.awt.Toolkit;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Iterator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.swing.DefaultListModel;
@@ -28,11 +30,15 @@ import javax.swing.DefaultListModel;
 public final class OCP extends javax.swing.JFrame {
 
     private final Sistema sistema;
+    private int[][] clientesRotas;
 
-    public OCP(Sistema s,String login) {
+    public OCP(Sistema s, String login) {
         initComponents();
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\Tiago\\Documents\\NetBeansProjects\\PI-TD1\\logo.png"));
+        this.setTitle("OCP Portugal");
         this.sistema = s;
         this.jTextPaneSessao.setText(login);
+        this.jTextPaneSessao1.setText(login);
         this.jTextPaneSessao4.setText(login);
         this.jTextPaneSessao5.setText(login);
         this.jTextPaneSessao7.setText(login);
@@ -40,6 +46,8 @@ public final class OCP extends javax.swing.JFrame {
         listaFuncionarios();
         listaClientes();
         listaEncomendas();
+        listaRotas();
+        ClientesRotas();
 
         this.jButtonGuardarFuncionario.setVisible(false);
         this.jButtonGuardarClientes.setVisible(false);
@@ -68,6 +76,44 @@ public final class OCP extends javax.swing.JFrame {
         this.jTextPaneTelefoneCliente.setEditable(false);
         this.jTextPaneTelefoneFuncionario.setEditable(false);
         this.jTextPaneTipo.setEditable(false);
+    }
+
+    private Map<Integer, String[]> parseClientes() { // idRota-> Clientes
+        Map<Integer, String[]> clientesVisitados = new HashMap<>();
+        String lista;
+        String delim = "[-]";
+
+        for (int k : this.sistema.getRotas().keySet()) {
+            lista = this.sistema.getRotas().get(k).getListaClientes();
+            String[] tokens = lista.split(delim);
+            clientesVisitados.put(k, tokens);
+
+        }
+        return clientesVisitados;
+    }
+
+    private int[][] ClientesRotas() {
+        int clientes = this.sistema.getClientes().size();
+        int rotas = this.sistema.getRotas().size();
+        this.clientesRotas = new int[clientes][rotas];
+        Map<Integer, String[]> clientesV = parseClientes();
+
+        for (int k : clientesV.keySet()) {
+            for (int l = 0; l < clientesV.get(k).length; l++) {
+                if (this.sistema.getClientes().containsKey(Integer.parseInt(clientesV.get(k)[l]))) {
+                    this.clientesRotas[Integer.parseInt(clientesV.get(k)[l])][k-1] = 1;
+                }
+            }
+        }
+
+        for (int i = 0; i < clientes; i++) {
+            for (int j = 0; j < rotas; j++) {
+                System.out.print(this.clientesRotas[i][j] + " ");
+            }
+            System.out.print("\n");
+        }
+
+        return clientesRotas;
     }
 
     private void updateListaFuncionarios() {
@@ -147,6 +193,15 @@ public final class OCP extends javax.swing.JFrame {
         jListProdutos.setSelectedIndex(0);
     }
 
+    public void listaRotas() {
+        DefaultListModel<Integer> str = new DefaultListModel<>();
+        for (int i : this.sistema.getRotas().keySet()) {
+            str.addElement(this.sistema.getRotas().get(i).getId_rota());
+        }
+        jListRotas.setModel(str);
+        jListRotas.setSelectedIndex(0);
+    }
+
     public void listaClientes() {
         DefaultListModel<String> str = new DefaultListModel<>();
         for (int i : this.sistema.getClientes().keySet()) {
@@ -155,7 +210,7 @@ public final class OCP extends javax.swing.JFrame {
         jListClientes.setModel(str);
         jListClientes.setSelectedIndex(0);
     }
-    
+
     public void listaEncomendas() {
         DefaultListModel<Integer> str = new DefaultListModel<>();
 //        TreeSet<String> ordena = new TreeSet<>();
@@ -167,15 +222,15 @@ public final class OCP extends javax.swing.JFrame {
             //ordena.add(c.getNome_farmacia());
         }
         /*
-        Iterator<String> it = ordena.iterator();
-        while(it.hasNext()){
-            str.addElement(it.next());
-        }
-        */
+         Iterator<String> it = ordena.iterator();
+         while(it.hasNext()){
+         str.addElement(it.next());
+         }
+         */
         jListEncomendas.setModel(str);
         jListEncomendas.setSelectedIndex(0);
     }
-    
+
     public Set<Integer> keysetFuncionariosMotoristas() {
         Set<Integer> res = new TreeSet<>();
         try {
@@ -226,11 +281,11 @@ public final class OCP extends javax.swing.JFrame {
         }
         return res;
     }
-    
+
     public Set<Integer> keysetProdutosEncomendas(int id) {
         Set<Integer> res = new TreeSet<>();
         try {
-            String sql = "SELECT * FROM Produto WHERE activo = 1 and E_Id_Encomenda="+id;
+            String sql = "SELECT * FROM Produto WHERE activo = 1 and E_Id_Encomenda=" + id;
             Statement stm = ConexaoBD.getConexao().createStatement();
             ResultSet rs = stm.executeQuery(sql);
             while (rs.next()) {
@@ -241,7 +296,7 @@ public final class OCP extends javax.swing.JFrame {
         }
         return res;
     }
-    
+
     public void listaFuncionarios() {
         DefaultListModel<String> str = new DefaultListModel<String>();
         for (int i : this.sistema.getFuncionarios().keySet()) {
@@ -250,15 +305,15 @@ public final class OCP extends javax.swing.JFrame {
         jListFuncionarios.setModel(str);
         jListFuncionarios.setSelectedIndex(0);
     }
-    
-    public void listaProdutosEncomendas(int id){
+
+    public void listaProdutosEncomendas(int id) {
         DefaultListModel<String> str = new DefaultListModel<String>();
         for (int i : keysetProdutosEncomendas(id)) {
             str.addElement(this.sistema.getProdutos().get(i).getNome());
         }
         jListProdutosEncomendas.setModel(str);
     }
-    
+
     public void listaFuncionariosMotoristas() {
         DefaultListModel<String> str = new DefaultListModel<String>();
         for (int i : keysetFuncionariosMotoristas()) {
@@ -309,7 +364,7 @@ public final class OCP extends javax.swing.JFrame {
         }
         return s;
     }
-    
+
     public String seleccionaEncomenda() {
         String s = null;
         if (jListEncomendas.getSelectedIndex() != -1) {
@@ -1285,10 +1340,10 @@ public final class OCP extends javax.swing.JFrame {
         for (int i : this.sistema.getClientes().keySet()) {
             if (this.sistema.getClientes().get(i).getNome_farmacia().equals(aux)) {
                 c = this.sistema.getClientes().get(i);
-                l=this.sistema.getLocais().get(c.getLocal_id_local());
+                l = this.sistema.getLocais().get(c.getLocal_id_local());
             }
         }
-        
+
         if (aux != null && c != null && l != null) {
             this.jTextPaneNomeCliente.setText(c.getNome_farmacia());
             this.jTextPaneNomeFarmaceutico.setText(c.getNome_farmaceutico());
@@ -1399,11 +1454,11 @@ public final class OCP extends javax.swing.JFrame {
         Cliente c = this.sistema.getClientes().get(idCliente);
         Encomenda e = null;
         for (int i : this.sistema.getEncomendas().keySet()) {
-            if (this.sistema.getEncomendas().get(i).getId_encomenda()==id) {
+            if (this.sistema.getEncomendas().get(i).getId_encomenda() == id) {
                 e = this.sistema.getEncomendas().get(i);
             }
         }
-        
+
         if (aux != null && e != null) {
             String fatura = Integer.toString(e.getFactura());
             this.jTextPaneFatura.setText(fatura);
@@ -1412,8 +1467,8 @@ public final class OCP extends javax.swing.JFrame {
             this.jTextPaneClienteEncomenda.setText(c.getNome_farmacia());
             listaProdutosEncomendas(id);
         }
-        
-        
+
+
     }//GEN-LAST:event_jListEncomendasValueChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

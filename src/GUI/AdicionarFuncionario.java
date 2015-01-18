@@ -8,6 +8,7 @@ package GUI;
 import Classes.Funcionario;
 import Classes.Sistema;
 import java.awt.HeadlessException;
+import java.awt.Toolkit;
 import javax.swing.JOptionPane;
 
 /**
@@ -22,6 +23,8 @@ public class AdicionarFuncionario extends javax.swing.JDialog {
     public AdicionarFuncionario(Sistema s) {
         
         initComponents();
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\Tiago\\Documents\\NetBeansProjects\\PI-TD1\\logo.png"));
+        this.setTitle("OCP Portugal");
         this.sistema=s;
     }
 

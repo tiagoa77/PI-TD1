@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  *
@@ -75,7 +76,7 @@ public class RotaDAO implements Map<Integer,Rota>{
             ResultSet rs = stm.executeQuery(sql);
             
             if(rs.next()) {
-             //   ro = new Rota(rs.getInt(1),rs.getDate(2),rs.getObject(3),rs.getObject(4, null));
+                ro = new Rota(rs.getInt(1),rs.getDate(2),rs.getNString(3));
             }            
             ConexaoBD.fecharCursor(rs, stm);
         } catch (SQLException e) {}
@@ -94,7 +95,20 @@ public class RotaDAO implements Map<Integer,Rota>{
 
     @Override
     public Set<Integer> keySet() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Set<Integer> res = new TreeSet<>();
+        try {
+            String sql = "SELECT * FROM rota";
+            Statement stm = ConexaoBD.getConexao().createStatement();
+            ResultSet rs = stm.executeQuery(sql);
+            while (rs.next()) {
+                res.add(rs.getInt(1));
+            }
+
+            ConexaoBD.fecharCursor(rs, stm);
+        } catch (SQLException e) {
+            
+        }
+        return res;
     }
 
     @Override

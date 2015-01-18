@@ -6,6 +6,7 @@
 package GUI;
 
 import Classes.Sistema;
+import java.awt.Toolkit;
 import javax.swing.JOptionPane;
 
 /**
@@ -17,6 +18,8 @@ public class Login extends javax.swing.JFrame {
     private final Sistema sistema;
     public Login(Sistema s) {
         initComponents();
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\Tiago\\Documents\\NetBeansProjects\\PI-TD1\\logo.png"));
+        this.setTitle("OCP Portugal");
         this.setLocationRelativeTo(null);
         this.sistema=s;
     }

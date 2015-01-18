@@ -7,6 +7,7 @@ package GUI;
 
 import Classes.Sistema;
 import Classes.Login;
+import java.awt.Toolkit;
 import javax.swing.JOptionPane;
 
 /**
@@ -22,6 +23,8 @@ public class AdicionarAdmin extends javax.swing.JDialog {
      */
     public AdicionarAdmin(Sistema s) {
         initComponents();
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\Tiago\\Documents\\NetBeansProjects\\PI-TD1\\logo.png"));
+        this.setTitle("OCP Portugal");
         this.sistema = s;
 
     }

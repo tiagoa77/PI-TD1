@@ -30,6 +30,7 @@ public class Sistema {
     private Map<Integer, Local> locais;
     private Map<Integer, Cliente> clientes;
     private Map<Integer, Encomenda> encomendas;
+    private int[][] clientesRotas;
     private String activo;
 
     public Sistema() {
@@ -41,10 +42,16 @@ public class Sistema {
         this.locais=new LocalDAO();
         this.clientes= new ClienteDAO();
         this.encomendas = new EncomendaDAO();
+        this.clientesRotas =null;
         this.activo = null;
         ConexaoBD.iniciarConexao();
     }
 
+    public int[][] getClientesRotas() {
+        return clientesRotas;
+    }
+
+    
     public Map<Integer, Funcionario> getFuncionarios() {
         return funcionarios;
     }

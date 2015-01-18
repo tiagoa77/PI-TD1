@@ -7,7 +7,6 @@ package Classes;
 
 import ClassesDAO.ClienteDAO;
 import ClassesDAO.EncomendaDAO;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,21 +18,23 @@ import java.util.Map;
 public class Rota {
     private int id_rota;
     private Date data_hora;   
+    private String listaClientes;
     private Map<Integer,Encomenda> encomendas;
     private Map<Integer,Cliente> clientes;
     
     public Rota(){
         this.id_rota=0;
         this.data_hora= new Date();
+        this.listaClientes="";
         this.encomendas=new EncomendaDAO();
-        this.clientes=new ClienteDAO(this.id_rota);
+        this.clientes=new ClienteDAO();
     }
     
-    public Rota(int id, Date data_hora){
+    public Rota(int id, Date data_hora,String listaClientes){
         this.id_rota=id;
         this.data_hora=data_hora;
-        this.encomendas=encomendas;
-        this.clientes=new ClienteDAO(this.id_rota);
+        this.listaClientes=listaClientes;
+        this.clientes=new ClienteDAO();
     }
     
     
@@ -42,6 +43,10 @@ public class Rota {
         this.data_hora=r.getData_hora();
         this.encomendas=r.getEncomendas();
         this.clientes=r.getClientes();
+    }
+
+    public String getListaClientes() {
+        return listaClientes;
     }
 
     public int getId_rota() {

@@ -8,6 +8,7 @@ package GUI;
 import Classes.Cliente;
 import Classes.Local;
 import Classes.Sistema;
+import java.awt.Toolkit;
 import javax.swing.JOptionPane;
 
 /**
@@ -24,6 +25,8 @@ public class AdicionarCliente extends javax.swing.JDialog {
     public AdicionarCliente(Sistema s) {
 
         initComponents();
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\Tiago\\Documents\\NetBeansProjects\\PI-TD1\\logo.png"));
+        this.setTitle("OCP Portugal");
         this.sistema = s;
     }
 

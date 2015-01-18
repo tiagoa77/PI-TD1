@@ -6,6 +6,7 @@
 package GUI;
 
 import Classes.Sistema;
+import java.awt.Toolkit;
 import javax.swing.JDialog;
 
 /**
@@ -19,6 +20,8 @@ public class Inicio extends javax.swing.JFrame {
      */
     public Inicio() {
         initComponents();
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\Tiago\\Documents\\NetBeansProjects\\PI-TD1\\logo.png"));
+        this.setTitle("OCP Portugal");
         this.setLocationRelativeTo(null);
         this.sistema=new Sistema();
     }
