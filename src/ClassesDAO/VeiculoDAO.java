@@ -23,6 +23,10 @@ import java.util.TreeSet;
  */
 public class VeiculoDAO implements Map<Integer,Veiculo>{
     private int idarmazem;
+
+    public VeiculoDAO() {
+    }
+    
     
     public VeiculoDAO(int id_armazem) {
         this.idarmazem=id_armazem;
@@ -33,7 +37,7 @@ public class VeiculoDAO implements Map<Integer,Veiculo>{
         int res = 0;
         try {
             Statement stm = ConexaoBD.getConexao().createStatement();
-            String sql = "SELECT * FROM Veiculo WHERE a_id_armazem = "+this.idarmazem;
+            String sql = "SELECT * FROM Veiculo";
             ResultSet rs = stm.executeQuery(sql);
             
             while(rs.next())
@@ -50,7 +54,7 @@ public class VeiculoDAO implements Map<Integer,Veiculo>{
         boolean res = false;
         try {
             Statement stm = ConexaoBD.getConexao().createStatement();
-            String sql = "SELECT * FROM Veiculo where a_id_armazem=" + this.idarmazem;
+            String sql = "SELECT * FROM Veiculo";
             ResultSet rs = stm.executeQuery(sql);
             if(!rs.next())
                 res=true;
@@ -65,7 +69,7 @@ public class VeiculoDAO implements Map<Integer,Veiculo>{
         boolean res = false;
         try {
             int id = (Integer) key;
-            String sql = "SELECT * FROM Veiculo WHERE a_id_armazem= "+ this.idarmazem + " and id_veiculo = " + id;
+            String sql = "SELECT * FROM Veiculo WHERE id_veiculo = " + id;
             Statement stm = ConexaoBD.getConexao().createStatement();
             ResultSet rs = stm.executeQuery(sql);
             res = rs.next();
@@ -82,7 +86,7 @@ public class VeiculoDAO implements Map<Integer,Veiculo>{
         try {
             int id = (Integer) key;
             Statement stm = ConexaoBD.getConexao().createStatement();
-            String sql = "SELECT * FROM Veiculo WHERE a_id_armazem = "+this.idarmazem+" and id_veiculo=" +id;
+            String sql = "SELECT * FROM Veiculo WHERE id_veiculo=" +id;
             ResultSet rs = stm.executeQuery(sql);
             
             if(rs.next()) {

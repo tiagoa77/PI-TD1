@@ -10,18 +10,35 @@ import Classes.Encomenda;
 import Classes.Funcionario;
 import Classes.Local;
 import Classes.Produto;
+import Classes.Rota;
 import Classes.Sistema;
+import Classes.Veiculo;
 import ClassesDAO.ConexaoBD;
+import ClassesDAO.MyParams;
+import ilog.concert.IloException;
+import ilog.cplex.IloCplex;
+import ilog.opl.IloOplDataSource;
+import ilog.opl.IloOplErrorHandler;
+import ilog.opl.IloOplException;
+import ilog.opl.IloOplFactory;
+import ilog.opl.IloOplModel;
+import ilog.opl.IloOplModelDefinition;
+import ilog.opl.IloOplModelSource;
+import ilog.opl.IloOplSettings;
+
 import java.awt.Toolkit;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -42,12 +59,15 @@ public final class OCP extends javax.swing.JFrame {
         this.jTextPaneSessao4.setText(login);
         this.jTextPaneSessao5.setText(login);
         this.jTextPaneSessao7.setText(login);
+        limpaRota();
+        cmbMotorista();
+        cmbVeiculo();
         listaProdutos();
         listaFuncionarios();
         listaClientes();
         listaEncomendas();
-        listaRotas();
-        ClientesRotas();
+        listaRotasEscolhidas();
+        this.sistema.ClientesRotas();
 
         this.jButtonGuardarFuncionario.setVisible(false);
         this.jButtonGuardarClientes.setVisible(false);
@@ -78,43 +98,37 @@ public final class OCP extends javax.swing.JFrame {
         this.jTextPaneTipo.setEditable(false);
     }
 
-    private Map<Integer, String[]> parseClientes() { // idRota-> Clientes
-        Map<Integer, String[]> clientesVisitados = new HashMap<>();
-        String lista;
-        String delim = "[-]";
-
-        for (int k : this.sistema.getRotas().keySet()) {
-            lista = this.sistema.getRotas().get(k).getListaClientes();
-            String[] tokens = lista.split(delim);
-            clientesVisitados.put(k, tokens);
-
+    private void cmbMotorista() {
+        jComboBoxMotorista.removeAllItems();
+        for (int i : keysetFuncionariosMotoristas()) {
+            jComboBoxMotorista.addItem(this.sistema.getFuncionarios().get(i).getNome());
         }
-        return clientesVisitados;
     }
 
-    private int[][] ClientesRotas() {
-        int clientes = this.sistema.getClientes().size();
-        int rotas = this.sistema.getRotas().size();
-        this.clientesRotas = new int[clientes][rotas];
-        Map<Integer, String[]> clientesV = parseClientes();
-
-        for (int k : clientesV.keySet()) {
-            for (int l = 0; l < clientesV.get(k).length; l++) {
-                if (this.sistema.getClientes().containsKey(Integer.parseInt(clientesV.get(k)[l]))) {
-                    this.clientesRotas[Integer.parseInt(clientesV.get(k)[l])][k-1] = 1;
-                }
-            }
+    private void cmbVeiculo() {
+        jComboBoxVeiculo.removeAllItems();
+        for (int i : this.sistema.getVeiculos().keySet()) {
+            jComboBoxVeiculo.addItem(this.sistema.getVeiculos().get(i).getMatricula());
         }
-
-        for (int i = 0; i < clientes; i++) {
-            for (int j = 0; j < rotas; j++) {
-                System.out.print(this.clientesRotas[i][j] + " ");
-            }
-            System.out.print("\n");
-        }
-
-        return clientesRotas;
     }
+
+    
+
+    private void listaPercurso(int idRota) {
+        Map<Integer, String[]> locais = this.sistema.parseClientes();
+
+        DefaultListModel<String> str = new DefaultListModel<String>();
+
+        String[] s = locais.get(idRota);
+        for (int j = 0; j < s.length; j++) {
+            str.addElement(this.sistema.getClientes().get(Integer.parseInt(s[j])).getNome_farmacia());
+        }
+        jListLocais.setModel(str);
+
+    }
+
+//private static class MyParams extends IloCustomOplDataSource {
+    
 
     private void updateListaFuncionarios() {
         if (jCheckBoxMotorista.isSelected() && jCheckBoxOperador.isSelected()) {
@@ -137,6 +151,35 @@ public final class OCP extends javax.swing.JFrame {
             listaClientesInativos();
         } else {
             listaClientes();
+        }
+    }
+
+    
+
+    private void limpaRota() {
+        try {
+            String sql = "UPDATE Rota SET"
+                    + " F_ID_Funcionario = " + null
+                    + ",V_ID_Veiculo= " + null
+                    + ",Estado = 'Nao Aprovado'";
+            PreparedStatement stm = ConexaoBD.getConexao().prepareStatement(sql);
+            stm.executeUpdate();
+            stm.close();
+        } catch (SQLException e) {
+        }
+    }
+
+    private void atualizaRota(int key, int idFuncionario, int idVeiculo) {
+        try {
+            String sql = "UPDATE Rota SET"
+                    + " F_ID_Funcionario = " + idFuncionario
+                    + ",V_ID_Veiculo= " + idVeiculo
+                    + ",Estado = 'Aprovado'"
+                    + " WHERE id_rota =" + key;
+            PreparedStatement stm = ConexaoBD.getConexao().prepareStatement(sql);
+            stm.executeUpdate();
+            stm.close();
+        } catch (SQLException e) {
         }
     }
 
@@ -193,13 +236,13 @@ public final class OCP extends javax.swing.JFrame {
         jListProdutos.setSelectedIndex(0);
     }
 
-    public void listaRotas() {
+    public void listaRotasEscolhidas() {
         DefaultListModel<Integer> str = new DefaultListModel<>();
-        for (int i : this.sistema.getRotas().keySet()) {
-            str.addElement(this.sistema.getRotas().get(i).getId_rota());
+        for (int i : this.sistema.getRotasEscolhidas().keySet()) {
+            str.addElement(this.sistema.getRotasEscolhidas().get(i).getId_rota_escolhida());
         }
-        jListRotas.setModel(str);
-        jListRotas.setSelectedIndex(0);
+        jListRotasEscolhidas.setModel(str);
+        jListRotasEscolhidas.setSelectedIndex(0);
     }
 
     public void listaClientes() {
@@ -373,15 +416,23 @@ public final class OCP extends javax.swing.JFrame {
         return s;
     }
 
+    public String seleccionaRota() {
+        String s = null;
+        if (jListRotasEscolhidas.getSelectedIndex() != -1) {
+            s = jListRotasEscolhidas.getSelectedValue().toString();
+        }
+        return s;
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         Tabs = new javax.swing.JTabbedPane();
         Rotas = new javax.swing.JPanel();
-        jLabelRotas = new javax.swing.JLabel();
+        jLabelRotasEscolhidas = new javax.swing.JLabel();
         jScrollPaneRotas = new javax.swing.JScrollPane();
-        jListRotas = new javax.swing.JList();
+        jListRotasEscolhidas = new javax.swing.JList();
         jLabelImagem = new javax.swing.JLabel();
         jLabelSessao = new javax.swing.JLabel();
         jTextPaneSessao = new javax.swing.JTextPane();
@@ -398,6 +449,7 @@ public final class OCP extends javax.swing.JFrame {
         jLabelLocais = new javax.swing.JLabel();
         jButtonValidar = new javax.swing.JButton();
         jTextPaneAprovacao = new javax.swing.JTextPane();
+        jButtonGerar = new javax.swing.JButton();
         Encomendas = new javax.swing.JPanel();
         jLabelEncomendas = new javax.swing.JLabel();
         jLabelImagem1 = new javax.swing.JLabel();
@@ -488,9 +540,14 @@ public final class OCP extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
-        jLabelRotas.setText("Rotas");
+        jLabelRotasEscolhidas.setText("Rotas Escolhidas");
 
-        jScrollPaneRotas.setViewportView(jListRotas);
+        jListRotasEscolhidas.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                jListRotasEscolhidasValueChanged(evt);
+            }
+        });
+        jScrollPaneRotas.setViewportView(jListRotasEscolhidas);
 
         jLabelImagem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/logo.png"))); // NOI18N
 
@@ -523,6 +580,18 @@ public final class OCP extends javax.swing.JFrame {
         jLabelLocais.setText("Locais:");
 
         jButtonValidar.setText("Validar Rota");
+        jButtonValidar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonValidarActionPerformed(evt);
+            }
+        });
+
+        jButtonGerar.setText("Gerar");
+        jButtonGerar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonGerarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout RotasLayout = new javax.swing.GroupLayout(Rotas);
         Rotas.setLayout(RotasLayout);
@@ -540,18 +609,18 @@ public final class OCP extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(RotasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jTextPaneAprovacao, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jButtonValidar, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jButtonValidar, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jButtonGerar, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addContainerGap())
                             .addGroup(RotasLayout.createSequentialGroup()
                                 .addGap(111, 111, 111)
                                 .addComponent(jLabelLocais, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                     .addGroup(RotasLayout.createSequentialGroup()
-                        .addGroup(RotasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabelRotas, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(RotasLayout.createSequentialGroup()
-                                .addComponent(jLabelSessao)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTextPaneSessao, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(RotasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabelSessao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabelRotasEscolhidas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jTextPaneSessao, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(RotasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(RotasLayout.createSequentialGroup()
                                 .addComponent(jLabelRota, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -581,7 +650,7 @@ public final class OCP extends javax.swing.JFrame {
                     .addComponent(jLabelSessao, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextPaneSessao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(8, 8, 8)
-                .addComponent(jLabelRotas, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabelRotasEscolhidas, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(RotasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(RotasLayout.createSequentialGroup()
@@ -603,9 +672,11 @@ public final class OCP extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabelLocais, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(RotasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(RotasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jScrollPaneLocais, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(RotasLayout.createSequentialGroup()
+                                .addComponent(jButtonGerar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jButtonValidar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(jTextPaneAprovacao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
@@ -1471,6 +1542,77 @@ public final class OCP extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jListEncomendasValueChanged
 
+    private void jListRotasEscolhidasValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jListRotasEscolhidasValueChanged
+        String aux = seleccionaRota();
+
+        if (aux != null) {
+            int id = Integer.parseInt(aux);
+            int idRota = this.sistema.getRotasEscolhidas().get(id).getEscolhida();
+            Rota r = this.sistema.getRotas().get(idRota);
+            String idRotaS = Integer.toString(idRota);
+            this.jTextPaneRotaID.setText(idRotaS);
+            DateFormat df = new SimpleDateFormat("MM/dd/yyy");
+            String data = df.format(r.getData_hora());
+            this.jTextPaneDataHora.setText(data);
+            this.jTextPaneAprovacao.setText(r.getAprovacao());
+            listaPercurso(idRota);
+        }
+    }//GEN-LAST:event_jListRotasEscolhidasValueChanged
+
+    private void jButtonValidarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonValidarActionPerformed
+        String veic = jComboBoxVeiculo.getSelectedItem().toString();
+        String func = jComboBoxMotorista.getSelectedItem().toString();
+        
+        int idRota = Integer.parseInt(this.jTextPaneRotaID.getText());
+        if(this.sistema.getRotas().get(idRota).getAprovacao().equals("Aprovado")){
+            JOptionPane.showMessageDialog(null, "Rota já validada!");
+        }
+        else{
+            jComboBoxMotorista.removeItem(func);
+            jComboBoxVeiculo.removeItem(veic);
+            JOptionPane.showMessageDialog(null, "Rota validada com sucesso!");
+        }
+        
+        Veiculo v = this.sistema.getVeiculo(veic);
+        Funcionario f = this.sistema.getFuncionario(func);
+        atualizaRota(idRota, f.getId_funcionario(), v.getId_veiculo());
+        listaRotasEscolhidas();
+    }//GEN-LAST:event_jButtonValidarActionPerformed
+
+    private void jButtonGerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGerarActionPerformed
+        int status = 127;
+        try {
+            IloOplFactory.setDebugMode(true);
+            IloOplFactory oplF = new IloOplFactory();
+            IloOplErrorHandler errHandler = oplF.createOplErrorHandler(System.out);
+            IloOplModelSource modelSource = oplF.createOplModelSource("C:\\Users\\Tiago\\Documents\\NetBeansProjects\\PI-TD1/PI_TD.mod");
+            IloOplSettings settings = oplF.createOplSettings(errHandler);
+            IloOplModelDefinition def = oplF.createOplModelDefinition(modelSource, settings);
+            IloCplex cplex = oplF.createCplex();
+            IloOplModel opl = oplF.createOplModel(def, cplex);
+
+            IloOplDataSource dataSource = new MyParams(oplF,clientesRotas,sistema);
+            opl.addDataSource(dataSource);
+            opl.generate();
+            oplF.end();
+            status = 0;
+        } catch (IloOplException ex) {
+            System.err.println("### OPL exception: " + ex.getMessage());
+            ex.printStackTrace();
+            status = 2;
+        } catch (IloException ex) {
+            System.err.println("### CONCERT exception: " + ex.getMessage());
+            ex.printStackTrace();
+            status = 3;
+        } catch (Exception ex) {
+            System.err.println("### UNEXPECTED UNKNOWN ERROR ...");
+            ex.printStackTrace();
+            status = 4;
+        }
+        System.out.println(status);
+        System.exit(status);
+    }//GEN-LAST:event_jButtonGerarActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Clientes;
     private javax.swing.JPanel Encomendas;
@@ -1486,6 +1628,7 @@ public final class OCP extends javax.swing.JFrame {
     private javax.swing.JButton jButtonAdicionarProduto;
     private javax.swing.JButton jButtonEditarClientes;
     private javax.swing.JButton jButtonEditarFuncionario;
+    private javax.swing.JButton jButtonGerar;
     private javax.swing.JButton jButtonGuardarClientes;
     private javax.swing.JButton jButtonGuardarFuncionario;
     private javax.swing.JButton jButtonRemover;
@@ -1532,7 +1675,7 @@ public final class OCP extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelProdutos;
     private javax.swing.JLabel jLabelProdutosEncomendas;
     private javax.swing.JLabel jLabelRota;
-    private javax.swing.JLabel jLabelRotas;
+    private javax.swing.JLabel jLabelRotasEscolhidas;
     private javax.swing.JLabel jLabelSessao;
     private javax.swing.JLabel jLabelSessao1;
     private javax.swing.JLabel jLabelSessao4;
@@ -1545,7 +1688,7 @@ public final class OCP extends javax.swing.JFrame {
     private javax.swing.JList jListLocais;
     private javax.swing.JList jListProdutos;
     private javax.swing.JList jListProdutosEncomendas;
-    private javax.swing.JList jListRotas;
+    private javax.swing.JList jListRotasEscolhidas;
     private javax.swing.JScrollPane jScrollPaneClientes;
     private javax.swing.JScrollPane jScrollPaneEncomendas;
     private javax.swing.JScrollPane jScrollPaneFuncionarios;

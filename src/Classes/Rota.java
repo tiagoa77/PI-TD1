@@ -19,6 +19,7 @@ public class Rota {
     private int id_rota;
     private Date data_hora;   
     private String listaClientes;
+    private String aprovacao;
     private Map<Integer,Encomenda> encomendas;
     private Map<Integer,Cliente> clientes;
     
@@ -26,14 +27,16 @@ public class Rota {
         this.id_rota=0;
         this.data_hora= new Date();
         this.listaClientes="";
+        this.aprovacao="Nao Aprovado";
         this.encomendas=new EncomendaDAO();
         this.clientes=new ClienteDAO();
     }
     
-    public Rota(int id, Date data_hora,String listaClientes){
+    public Rota(int id, Date data_hora,String listaClientes,String estado){
         this.id_rota=id;
         this.data_hora=data_hora;
         this.listaClientes=listaClientes;
+        this.aprovacao=estado;
         this.clientes=new ClienteDAO();
     }
     
@@ -43,8 +46,14 @@ public class Rota {
         this.data_hora=r.getData_hora();
         this.encomendas=r.getEncomendas();
         this.clientes=r.getClientes();
+        this.aprovacao=r.getAprovacao();
     }
 
+    public String getAprovacao() {
+        return aprovacao;
+    }
+
+    
     public String getListaClientes() {
         return listaClientes;
     }

@@ -8,12 +8,19 @@ package Classes;
 import ClassesDAO.ArmazemDAO;
 import ClassesDAO.ClienteDAO;
 import ClassesDAO.ConexaoBD;
+import ClassesDAO.DistanciaDAO;
 import ClassesDAO.EncomendaDAO;
 import ClassesDAO.FuncionarioDAO;
 import ClassesDAO.LocalDAO;
 import ClassesDAO.RotaDAO;
 import ClassesDAO.LoginDAO;
 import ClassesDAO.ProdutoDAO;
+import ClassesDAO.RotasEscolhidasDAO;
+import ClassesDAO.VeiculoDAO;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -24,31 +31,111 @@ public class Sistema {
 
     private Map<Integer, Armazem> armazens;
     private Map<Integer, Rota> rotas;
+    private Map<Integer, RotasEscolhidas> rotasEscolhidas;
     private Map<Integer, Login> logins;
     private Map<Integer, Produto> produtos;
     private Map<Integer, Funcionario> funcionarios;
     private Map<Integer, Local> locais;
     private Map<Integer, Cliente> clientes;
     private Map<Integer, Encomenda> encomendas;
+    private Map<Integer, Distancia> distancias;
+    private Map<Integer, Veiculo> veiculos;
     private int[][] clientesRotas;
     private String activo;
 
     public Sistema() {
         this.armazens = new ArmazemDAO();
         this.rotas = new RotaDAO();
+        this.rotasEscolhidas = new RotasEscolhidasDAO();
         this.logins = new LoginDAO();
         this.produtos=new ProdutoDAO();
         this.funcionarios=new FuncionarioDAO();
         this.locais=new LocalDAO();
         this.clientes= new ClienteDAO();
         this.encomendas = new EncomendaDAO();
+        this.veiculos=new VeiculoDAO();
+        this.distancias=new DistanciaDAO();
         this.clientesRotas =null;
         this.activo = null;
         ConexaoBD.iniciarConexao();
     }
 
+    public Map<Integer, Distancia> getDistancias() {
+        return distancias;
+    }
+
+    public int devolve_distancias(int origem, int destino) {
+        int tmp;
+        if(origem>destino && origem!=destino){
+            tmp=origem;
+            origem=destino;
+            destino=tmp;
+        }
+        else return 0;
+        PreparedStatement ps = null;
+        int distancia = 0;
+        try {
+            String sql = "select devolve_distancia(?,?) from dual";
+            ps = ConexaoBD.getConexao().prepareStatement(sql);
+            ps.setInt(1, origem);
+            ps.setInt(2, destino);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                distancia = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+        }
+        return distancia;
+    }
+    
+    public Map<Integer, String[]> parseClientes() { // idRota-> Clientes
+        Map<Integer, String[]> clientesVisitados = new HashMap<>();
+        String lista;
+        String delim = "[-]";
+
+        for (int k : getRotas().keySet()) {
+            lista = getRotas().get(k).getListaClientes();
+            String[] tokens = lista.split(delim);
+            clientesVisitados.put(k, tokens);
+
+        }
+        return clientesVisitados;
+    }
+
+    public int[][] ClientesRotas() {
+        int clientes = getClientes().size();
+        int rotas = getRotas().size();
+        this.clientesRotas = new int[clientes][rotas];
+        Map<Integer, String[]> clientesV = parseClientes();
+
+        for (int k : clientesV.keySet()) {
+            for (int l = 0; l < clientesV.get(k).length; l++) {
+                if (getClientes().containsKey(Integer.parseInt(clientesV.get(k)[l]))) {
+                    this.clientesRotas[Integer.parseInt(clientesV.get(k)[l])][k - 1] = 1;
+                }
+            }
+        }
+        /*
+         for (int i = 0; i < clientes; i++) {
+         for (int j = 0; j < rotas; j++) {
+         System.out.print(this.clientesRotas[i][j] + " ");
+         }
+         System.out.print("\n");
+         }
+         */
+        return clientesRotas;
+    }
+    
+    
+    
+    
+    
     public int[][] getClientesRotas() {
         return clientesRotas;
+    }
+
+    public Map<Integer, Veiculo> getVeiculos() {
+        return veiculos;
     }
 
     
@@ -83,6 +170,11 @@ public class Sistema {
     public Map<Integer, Encomenda> getEncomendas(){
         return encomendas;
     }
+
+    public Map<Integer, RotasEscolhidas> getRotasEscolhidas() {
+        return rotasEscolhidas;
+    }
+    
     
     
     public int addProduto(int id,Produto p){
@@ -149,6 +241,15 @@ public class Sistema {
         for (int i : this.funcionarios.keySet()) {
             if (this.funcionarios.get(i).getNome().equals(nome)) {
                 return this.funcionarios.get(i);
+            }
+        }
+        return null;
+    }
+    
+    public Veiculo getVeiculo(String matricula) {
+        for (int i : this.veiculos.keySet()) {
+            if (this.veiculos.get(i).getMatricula().equals(matricula)) {
+                return this.veiculos.get(i);
             }
         }
         return null;

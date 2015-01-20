@@ -1,6 +1,7 @@
 package ClassesDAO;
 
-import Classes.Rota;
+import Classes.Distancia;
+import Classes.RotasEscolhidas;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -8,14 +9,15 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import oracle.jdbc.driver.DiagnosabilityMXBean;
 
 /**
  *
  * @author Tiago
  */
-public class RotaDAO implements Map<Integer,Rota>{
+public class DistanciaDAO implements Map<Integer,Distancia>{
 
-    public RotaDAO() {
+    public DistanciaDAO() {
         
     }
 
@@ -24,7 +26,7 @@ public class RotaDAO implements Map<Integer,Rota>{
         int res = 0;
         try {
             Statement stm = ConexaoBD.getConexao().createStatement();
-            String sql = "SELECT * FROM ROTA";
+            String sql = "SELECT * FROM Distancias";
             ResultSet rs = stm.executeQuery(sql);
             while (rs.next()) {
                 res++;
@@ -39,7 +41,7 @@ public class RotaDAO implements Map<Integer,Rota>{
         boolean res = false;
         try {
             Statement stm = ConexaoBD.getConexao().createStatement();
-            String sql = "SELECT * FROM ROTA";
+            String sql = "SELECT * FROM Distancias";
             ResultSet rs = stm.executeQuery(sql);
             if(!rs.next())
                 res=true;
@@ -54,7 +56,7 @@ public class RotaDAO implements Map<Integer,Rota>{
         boolean res = false;
         try {
             Integer id = (Integer) key;
-            String sql = "SELECT * FROM ROTA r WHERE r.id_rota = "+id;
+            String sql = "SELECT * FROM Distancias WHERE origem= "+id;
             Statement stm = ConexaoBD.getConexao().createStatement();
             ResultSet rs = stm.executeQuery(sql);
             res = rs.next();
@@ -67,29 +69,29 @@ public class RotaDAO implements Map<Integer,Rota>{
     
 
     @Override
-    public Rota get(Object key) {
-        Rota ro = null;
+    public Distancia get(Object key) {
+        Distancia d = null;
         try {
             Integer id = (Integer) key;
             Statement stm = ConexaoBD.getConexao().createStatement();
-            String sql = "SELECT * FROM ROTA WHERE id_rota= "+id;
+            String sql = "SELECT * FROM Distancias WHERE origem= "+id;
             ResultSet rs = stm.executeQuery(sql);
             
             if(rs.next()) {
-                ro = new Rota(rs.getInt(1),rs.getDate(2),rs.getNString(3),rs.getString(6));
+                d = new Distancia(rs.getInt(1),rs.getInt(2),rs.getInt(3));
             }            
             ConexaoBD.fecharCursor(rs, stm);
         } catch (SQLException e) {}
-        return ro;
+        return d;
     }
 
     @Override
-    public Rota put(Integer key, Rota value) {
+    public Distancia put(Integer key, Distancia value) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Rota remove(Object key) {
+    public Distancia remove(Object key) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -97,7 +99,7 @@ public class RotaDAO implements Map<Integer,Rota>{
     public Set<Integer> keySet() {
         Set<Integer> res = new TreeSet<>();
         try {
-            String sql = "SELECT * FROM rota";
+            String sql = "SELECT * FROM Distancias";
             Statement stm = ConexaoBD.getConexao().createStatement();
             ResultSet rs = stm.executeQuery(sql);
             while (rs.next()) {
@@ -112,14 +114,11 @@ public class RotaDAO implements Map<Integer,Rota>{
     }
 
     @Override
-    public Collection<Rota> values() {
+    public Collection<Distancia> values() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public Set<Entry<Integer, Rota>> entrySet() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    
     
     @Override
     public boolean containsValue(Object value) {
@@ -127,12 +126,18 @@ public class RotaDAO implements Map<Integer,Rota>{
     }
     
     @Override
-    public void putAll(Map<? extends Integer, ? extends Rota> m) {
+    public void putAll(Map<? extends Integer, ? extends Distancia> m) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void clear() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+
+    @Override
+    public Set<Entry<Integer, Distancia>> entrySet() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
