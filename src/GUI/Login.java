@@ -16,6 +16,7 @@ import javax.swing.JOptionPane;
 public class Login extends javax.swing.JFrame {
 
     private final Sistema sistema;
+    
     public Login(Sistema s) {
         initComponents();
         this.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\Tiago\\Documents\\NetBeansProjects\\PI-TD1\\logo.png"));
@@ -144,8 +145,8 @@ public class Login extends javax.swing.JFrame {
         
         
         Boolean ligado = sistema.ligaFuncionario(login, pass);
+        
         if(ligado){
-            JOptionPane.showMessageDialog(null, "Bem vindo ");
             new OCP(sistema,login).setVisible(true);
             this.setVisible(false);
         }

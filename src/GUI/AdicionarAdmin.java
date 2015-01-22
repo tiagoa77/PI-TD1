@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
  */
 public class AdicionarAdmin extends javax.swing.JDialog {
 
-    Sistema sistema;
+    private Sistema s;
 
     /**
      * Creates new form AdicionarAdmin
@@ -25,7 +25,7 @@ public class AdicionarAdmin extends javax.swing.JDialog {
         initComponents();
         this.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\Tiago\\Documents\\NetBeansProjects\\PI-TD1\\logo.png"));
         this.setTitle("OCP Portugal");
-        this.sistema = s;
+        this.s = s;
 
     }
 
@@ -149,7 +149,7 @@ public class AdicionarAdmin extends javax.swing.JDialog {
         String pass = jPasswordFieldPass.getText();
         Login novo = new Login(login, pass);
         int i = 0;
-        this.sistema.getLogins().put(i, novo);
+        this.s.getLogins().put(i, novo);
 
         JOptionPane.showMessageDialog(null, "Registado com sucesso");
         new Inicio().setVisible(true);

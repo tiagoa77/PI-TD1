@@ -16,6 +16,8 @@ import Classes.Veiculo;
 import ClassesDAO.ConexaoBD;
 import ClassesDAO.MyParams;
 import ilog.concert.IloException;
+import ilog.concert.IloIntMap;
+import ilog.concert.IloIntSet;
 import ilog.cplex.IloCplex;
 import ilog.opl.IloOplDataSource;
 import ilog.opl.IloOplErrorHandler;
@@ -25,6 +27,7 @@ import ilog.opl.IloOplModel;
 import ilog.opl.IloOplModelDefinition;
 import ilog.opl.IloOplModelSource;
 import ilog.opl.IloOplSettings;
+import ilog.cp.*;
 
 import java.awt.Toolkit;
 import java.sql.PreparedStatement;
@@ -49,8 +52,10 @@ public final class OCP extends javax.swing.JFrame {
     private final Sistema sistema;
     private int[][] clientesRotas;
 
-    public OCP(Sistema s, String login) {
+    public OCP(Sistema s,String login) {
+        
         initComponents();
+        this.setLocationRelativeTo(null);
         this.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\Tiago\\Documents\\NetBeansProjects\\PI-TD1\\logo.png"));
         this.setTitle("OCP Portugal");
         this.sistema = s;
@@ -59,6 +64,7 @@ public final class OCP extends javax.swing.JFrame {
         this.jTextPaneSessao4.setText(login);
         this.jTextPaneSessao5.setText(login);
         this.jTextPaneSessao7.setText(login);
+
         limpaRota();
         cmbMotorista();
         cmbVeiculo();
@@ -67,7 +73,7 @@ public final class OCP extends javax.swing.JFrame {
         listaClientes();
         listaEncomendas();
         listaRotasEscolhidas();
-        this.sistema.ClientesRotas();
+        //clientesRotas = this.sistema.ClientesRotas();
 
         this.jButtonGuardarFuncionario.setVisible(false);
         this.jButtonGuardarClientes.setVisible(false);
@@ -98,6 +104,10 @@ public final class OCP extends javax.swing.JFrame {
         this.jTextPaneTipo.setEditable(false);
     }
 
+    public Sistema getSistema() {
+        return sistema;
+    }
+
     private void cmbMotorista() {
         jComboBoxMotorista.removeAllItems();
         for (int i : keysetFuncionariosMotoristas()) {
@@ -112,8 +122,6 @@ public final class OCP extends javax.swing.JFrame {
         }
     }
 
-    
-
     private void listaPercurso(int idRota) {
         Map<Integer, String[]> locais = this.sistema.parseClientes();
 
@@ -126,9 +134,6 @@ public final class OCP extends javax.swing.JFrame {
         jListLocais.setModel(str);
 
     }
-
-//private static class MyParams extends IloCustomOplDataSource {
-    
 
     private void updateListaFuncionarios() {
         if (jCheckBoxMotorista.isSelected() && jCheckBoxOperador.isSelected()) {
@@ -153,8 +158,6 @@ public final class OCP extends javax.swing.JFrame {
             listaClientes();
         }
     }
-
-    
 
     private void limpaRota() {
         try {
@@ -450,6 +453,7 @@ public final class OCP extends javax.swing.JFrame {
         jButtonValidar = new javax.swing.JButton();
         jTextPaneAprovacao = new javax.swing.JTextPane();
         jButtonGerar = new javax.swing.JButton();
+        jTextPaneTeste = new javax.swing.JTextPane();
         Encomendas = new javax.swing.JPanel();
         jLabelEncomendas = new javax.swing.JLabel();
         jLabelImagem1 = new javax.swing.JLabel();
@@ -640,6 +644,10 @@ public final class OCP extends javax.swing.JFrame {
                                     .addComponent(jComboBoxMotorista, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jComboBoxVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addContainerGap(19, Short.MAX_VALUE))))
+            .addGroup(RotasLayout.createSequentialGroup()
+                .addGap(170, 170, 170)
+                .addComponent(jTextPaneTeste, javax.swing.GroupLayout.PREFERRED_SIZE, 373, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         RotasLayout.setVerticalGroup(
             RotasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -681,7 +689,9 @@ public final class OCP extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(jTextPaneAprovacao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addComponent(jScrollPaneRotas))
-                .addGap(0, 65, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                .addComponent(jTextPaneTeste, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         Tabs.addTab("Rotas", Rotas);
@@ -1303,17 +1313,18 @@ public final class OCP extends javax.swing.JFrame {
 
     private void jButtonAdicionarFuncionarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAdicionarFuncionarioActionPerformed
         // TODO add your handling code here:
-        new AdicionarFuncionario(sistema).setVisible(true);
+        new AdicionarFuncionario(this).setVisible(true);
         listaFuncionarios();
     }//GEN-LAST:event_jButtonAdicionarFuncionarioActionPerformed
 
     private void jButtonAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAdicionarActionPerformed
         // TODO add your handling code here:
-        new AdicionarCliente(sistema).setVisible(true);
+        new AdicionarCliente(this).setVisible(true);
+        listaClientes();
     }//GEN-LAST:event_jButtonAdicionarActionPerformed
 
     private void jButtonAdicionarProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAdicionarProdutoActionPerformed
-        new AdicionarProduto(sistema).setVisible(true);
+        new AdicionarProduto(this).setVisible(true);
         listaProdutos();
     }//GEN-LAST:event_jButtonAdicionarProdutoActionPerformed
 
@@ -1538,8 +1549,6 @@ public final class OCP extends javax.swing.JFrame {
             this.jTextPaneClienteEncomenda.setText(c.getNome_farmacia());
             listaProdutosEncomendas(id);
         }
-
-
     }//GEN-LAST:event_jListEncomendasValueChanged
 
     private void jListRotasEscolhidasValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jListRotasEscolhidasValueChanged
@@ -1547,11 +1556,11 @@ public final class OCP extends javax.swing.JFrame {
 
         if (aux != null) {
             int id = Integer.parseInt(aux);
-            int idRota = this.sistema.getRotasEscolhidas().get(id).getEscolhida();
-            Rota r = this.sistema.getRotas().get(idRota);
+            int idRota = this.getSistema().getRotasEscolhidas().get(id).getEscolhida();
+            Rota r = this.getSistema().getRotas().get(idRota);
             String idRotaS = Integer.toString(idRota);
             this.jTextPaneRotaID.setText(idRotaS);
-            DateFormat df = new SimpleDateFormat("MM/dd/yyy");
+            DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
             String data = df.format(r.getData_hora());
             this.jTextPaneDataHora.setText(data);
             this.jTextPaneAprovacao.setText(r.getAprovacao());
@@ -1562,17 +1571,16 @@ public final class OCP extends javax.swing.JFrame {
     private void jButtonValidarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonValidarActionPerformed
         String veic = jComboBoxVeiculo.getSelectedItem().toString();
         String func = jComboBoxMotorista.getSelectedItem().toString();
-        
+
         int idRota = Integer.parseInt(this.jTextPaneRotaID.getText());
-        if(this.sistema.getRotas().get(idRota).getAprovacao().equals("Aprovado")){
+        if (this.sistema.getRotas().get(idRota).getAprovacao().equals("Aprovado")) {
             JOptionPane.showMessageDialog(null, "Rota já validada!");
-        }
-        else{
+        } else {
             jComboBoxMotorista.removeItem(func);
             jComboBoxVeiculo.removeItem(veic);
             JOptionPane.showMessageDialog(null, "Rota validada com sucesso!");
         }
-        
+
         Veiculo v = this.sistema.getVeiculo(veic);
         Funcionario f = this.sistema.getFuncionario(func);
         atualizaRota(idRota, f.getId_funcionario(), v.getId_veiculo());
@@ -1580,22 +1588,49 @@ public final class OCP extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonValidarActionPerformed
 
     private void jButtonGerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGerarActionPerformed
+        
         int status = 127;
         try {
             IloOplFactory.setDebugMode(true);
             IloOplFactory oplF = new IloOplFactory();
             IloOplErrorHandler errHandler = oplF.createOplErrorHandler(System.out);
-            IloOplModelSource modelSource = oplF.createOplModelSource("C:\\Users\\Tiago\\Documents\\NetBeansProjects\\PI-TD1/PI_TD.mod");
+            IloOplModelSource modelSource = oplF.createOplModelSource("C:\\PI_TD.mod");
             IloOplSettings settings = oplF.createOplSettings(errHandler);
             IloOplModelDefinition def = oplF.createOplModelDefinition(modelSource, settings);
+            //IloCP cp = oplF.createCP();
             IloCplex cplex = oplF.createCplex();
             IloOplModel opl = oplF.createOplModel(def, cplex);
 
-            IloOplDataSource dataSource = new MyParams(oplF,clientesRotas,sistema);
+            IloOplDataSource dataSource = new MyParams(oplF, this);
             opl.addDataSource(dataSource);
             opl.generate();
+            if (cplex.solve()) {
+
+                System.out.println("OBJECTIVE: " + opl.getCplex().getObjValue());
+                opl.postProcess();
+                opl.printSolution(System.out);
+                opl.getElement("y").asIntMap();
+
+                HashMap<Integer, Integer> hm = new HashMap<>();
+                //res = opl.getElement("naoEscalonadas").asIntMap();
+                //System.out.println("RESULTADO: "+opl.getElement("naoEscalonadas").asIntMap());
+
+                IloIntMap rs = opl.getElement("y").asIntMap();
+                IloIntSet i = opl.getElement("R").asIntSet();
+
+                for (java.util.Iterator it1 = i.iterator(); it1.hasNext();) {
+                    Integer sub1 = (Integer) it1.next();
+                    hm.put(sub1, rs.get(sub1));
+                }
+                this.jTextPaneTeste.setText(hm.toString());
+                
+                
+                
+            } else {
+                System.out.println("NOOOOOOOOOOOOO SOLUTIONNNNNNNNNNNNNNNNN!");
+                status = 2;
+            }
             oplF.end();
-            status = 0;
         } catch (IloOplException ex) {
             System.err.println("### OPL exception: " + ex.getMessage());
             ex.printStackTrace();
@@ -1609,8 +1644,38 @@ public final class OCP extends javax.swing.JFrame {
             ex.printStackTrace();
             status = 4;
         }
-        System.out.println(status);
-        System.exit(status);
+    }
+
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Inicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Inicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Inicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Inicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+            }
+        });
+
     }//GEN-LAST:event_jButtonGerarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1721,6 +1786,7 @@ public final class OCP extends javax.swing.JFrame {
     private javax.swing.JTextPane jTextPaneSessao7;
     private javax.swing.JTextPane jTextPaneTelefoneCliente;
     private javax.swing.JTextPane jTextPaneTelefoneFuncionario;
+    private javax.swing.JTextPane jTextPaneTeste;
     private javax.swing.JTextPane jTextPaneTipo;
     // End of variables declaration//GEN-END:variables
 }

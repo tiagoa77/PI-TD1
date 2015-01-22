@@ -16,16 +16,16 @@ import javax.swing.JOptionPane;
  * @author Tiago
  */
 public class AdicionarProduto extends javax.swing.JDialog {
-    private final Sistema sistema;
+    private final OCP o;
     /**
      * Creates new form AdicionarProduto
      */
-    public AdicionarProduto(Sistema s) {
+    public AdicionarProduto(OCP o) {
         
         initComponents();
         this.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\Tiago\\Documents\\NetBeansProjects\\PI-TD1\\logo.png"));
         this.setTitle("OCP Portugal");
-        this.sistema=s;
+        this.o=o;
     }
 
     /**
@@ -173,7 +173,7 @@ public class AdicionarProduto extends javax.swing.JDialog {
 
             Produto novo = new Produto(id,nome, preco, tipo,descricao ,1,1,0);
             
-            if (this.sistema.addProduto(novo.getId_produto(),novo) == 1) {
+            if (this.o.getSistema().addProduto(novo.getId_produto(),novo) == 1) {
                 JOptionPane.showMessageDialog(null, "Adicionado com Sucesso");
                 this.setVisible(false);
             } else {

@@ -7,7 +7,6 @@ package GUI;
 
 import Classes.Sistema;
 import java.awt.Toolkit;
-import javax.swing.JDialog;
 
 /**
  *

@@ -6,10 +6,8 @@
 package ClassesDAO;
 
 import Classes.Sistema;
-import ilog.concert.IloException;
-import ilog.cplex.*;
+import GUI.OCP;
 import ilog.opl.*;
-import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -18,13 +16,13 @@ import java.util.Map;
  */
 public class MyParams extends IloCustomOplDataSource {
 
-    private Sistema sistema;
-    int[][] clientesRotas;
-
-    public MyParams(IloOplFactory oplF, int[][] cR, Sistema s) {
+    private OCP ocp;
+    //int[][] clientesRotas;
+    
+    
+    public MyParams(IloOplFactory oplF, OCP ocp) {
         super(oplF);
-        this.clientesRotas = cR;
-        this.sistema = s;
+        this.ocp = ocp;
     }
 
     public void customRead() {
@@ -32,13 +30,13 @@ public class MyParams extends IloCustomOplDataSource {
         
         //Numero Veiculos
         handler.startElement("K");
-        handler.addIntItem(this.sistema.getVeiculos().size());
+        handler.addIntItem(this.ocp.getSistema().getVeiculos().size());
         handler.endElement();
         
         //Numero Clientes
         handler.startElement("V");
         handler.startSet();
-        for (int i : this.sistema.getClientes().keySet()) {
+        for (int i : this.ocp.getSistema().getClientes().keySet()) {
             handler.addIntItem(i);
         }
         handler.endSet();
@@ -46,7 +44,8 @@ public class MyParams extends IloCustomOplDataSource {
         
         handler.startElement("Clientes");
         handler.startIndexedArray();
-        for (int i : this.sistema.getClientes().keySet()) {
+        for (int i : this.ocp.getSistema().getClientes().keySet()) {
+            handler.setItemIntIndex(i);
             handler.addIntItem(i);
         }
         handler.endIndexedArray();
@@ -56,7 +55,7 @@ public class MyParams extends IloCustomOplDataSource {
         
         handler.startElement("R");
         handler.startSet();
-        for (int i : this.sistema.getRotas().keySet()) {
+        for (int i : this.ocp.getSistema().getRotas().keySet()) {
             handler.addIntItem(i);
         }
         handler.endSet();
@@ -64,7 +63,8 @@ public class MyParams extends IloCustomOplDataSource {
         
         handler.startElement("Rotas");
         handler.startIndexedArray();
-        for (int i : this.sistema.getRotas().keySet()) {
+        for (int i : this.ocp.getSistema().getRotas().keySet()) {
+            handler.setItemIntIndex(i);
             handler.addIntItem(i);
         }
         handler.endIndexedArray();
@@ -72,43 +72,57 @@ public class MyParams extends IloCustomOplDataSource {
        
 
         //Numero Custos 
-
-        ArrayList<Integer> distancias = new ArrayList<>();
-
-        for (int i : this.sistema.getDistancias().keySet()) {
-            distancias.add(i);
+     /*   
+        handler.startElement("C");
+        handler.startSet();
+        for (int i : this.sistema.getRotas().keySet()) {
+            handler.addIntItem(i-1);
         }
+        handler.endSet();
+        handler.endElement();
+       */ 
         
-        System.out.println("distancias: "+distancias.size());
+        Map<Integer,String[]> clientes = this.ocp.getSistema().parseClientes();
         
+        int Conta=0;
+        //Matriz ClientesRotas
+        handler.startElement("ClientesRotas");
+        handler.startIndexedArray();
+        for (int i : this.ocp.getSistema().getClientes().keySet()) {
+            handler.setItemIntIndex(i);
+            handler.startIndexedArray();
+            for (int j : this.ocp.getSistema().getRotas().keySet()) {
+                for(int k=0;k<clientes.get(j).length;k++){
+                    handler.setItemIntIndex(j);
+                    if (Integer.parseInt(clientes.get(j)[k])==i) {
+                        handler.addIntItem(1);
+                        Conta++;
+                    }
+                }
+            }
+            handler.endIndexedArray();
+        }
+        handler.endIndexedArray();
+        handler.endElement();
         
-        Map<Integer,String[]> clientes = this.sistema.parseClientes();
+        System.out.println(Conta);
         int total;
+        int c1,c2;
         handler.startElement("Custos");
         handler.startIndexedArray();
-        for (int i: this.sistema.getRotas().keySet()) {
+        for (int i: this.ocp.getSistema().getRotas().keySet()) {
             total=0;
-            for(int j=0;j<clientes.get(i).length;j++){
-                total+=this.sistema.devolve_distancias(j,j+1);
+            handler.setItemIntIndex(i);
+            for(int j=1;j<this.ocp.getSistema().getTamanho().get(i);j++){
+                c1= Integer.parseInt(clientes.get(i)[j-1]);
+                c2= Integer.parseInt(clientes.get(i)[j]);
+                //System.out.println("Rotas: " + i + "   c1="+c1+"    c2="+ c2+ "   Dist: "+this.sistema.devolve_distancias(c1,c2));
+                total+=this.ocp.getSistema().devolve_distancias(c1,c2);
             }
             handler.addIntItem(total);
         }
         handler.endIndexedArray();
         handler.endElement();
         
-
-        //Matriz ClientesRotas
-        handler.startElement("ClientesRotas");
-        handler.startArray();
-        System.out.println("TAMANHO:" + this.clientesRotas.length);
-        for (int i = 0; i < this.clientesRotas.length; i++) {
-            handler.startArray();
-            for (int j = 0; j < clientesRotas[i].length; j++) {
-                handler.addIntItem(clientesRotas[i][j]);
-            }
-            handler.endArray();
-        }
-        handler.endArray();
-        handler.endElement();
     }
 }

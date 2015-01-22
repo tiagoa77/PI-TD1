@@ -17,17 +17,17 @@ import javax.swing.JOptionPane;
  */
 public class AdicionarCliente extends javax.swing.JDialog {
 
-    Sistema sistema;
+    private OCP o;
 
     /**
      * Creates new form AdicionarCliente
      */
-    public AdicionarCliente(Sistema s) {
+    public AdicionarCliente(OCP o) {
 
         initComponents();
         this.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\Tiago\\Documents\\NetBeansProjects\\PI-TD1\\logo.png"));
         this.setTitle("OCP Portugal");
-        this.sistema = s;
+        this.o = o;
     }
 
     /**
@@ -190,10 +190,12 @@ public class AdicionarCliente extends javax.swing.JDialog {
         int id_local = 0;
 
         Local novoL = new Local(id, morada, concelho);
-        Cliente novoC = new Cliente(id, nomeFarmacia, nomeResp, contacto, nif, 1, id_local);
+        
 
-        if (this.sistema.addLocal(novoL.getId_local(), novoL) == 1) {
-            if (this.sistema.addCliente(novoC.getId_cliente(), novoC) == 1) {
+        if (this.o.getSistema().addLocal(novoL.getId_local(), novoL) == 1) {
+            
+            Cliente novoC = new Cliente(id, nomeFarmacia, nomeResp, contacto, nif, 1, id_local);
+            if (this.o.getSistema().addCliente(novoC.getId_cliente(), novoC) == 1) {
                 JOptionPane.showMessageDialog(null, "Adicionado com Sucesso");
                 this.setVisible(false);
             }

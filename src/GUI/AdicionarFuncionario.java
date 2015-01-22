@@ -16,16 +16,16 @@ import javax.swing.JOptionPane;
  * @author Tiago
  */
 public class AdicionarFuncionario extends javax.swing.JDialog {
-    public final Sistema sistema;
+    public OCP o;
     /**
      * Creates new form AdicionarFuncionario
      */
-    public AdicionarFuncionario(Sistema s) {
+    public AdicionarFuncionario(OCP o) {
         
         initComponents();
         this.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\Tiago\\Documents\\NetBeansProjects\\PI-TD1\\logo.png"));
         this.setTitle("OCP Portugal");
-        this.sistema=s;
+        this.o=o;
     }
 
     /**
@@ -179,7 +179,7 @@ public class AdicionarFuncionario extends javax.swing.JDialog {
 
             Funcionario novo = new Funcionario(id,nome,dataNasc,morada,contact,funcao,1,1);
             
-            if (this.sistema.addFuncionario(novo.getId_funcionario(),novo) == 1) {
+            if (this.o.getSistema().addFuncionario(novo.getId_funcionario(),novo) == 1) {
                 JOptionPane.showMessageDialog(null, "Adicionado com Sucesso");
                 this.setVisible(false);
             } else {
