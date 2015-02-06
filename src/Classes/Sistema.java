@@ -221,7 +221,17 @@ public class Sistema {
         this.clientes.put(id, c);
         return 1;
     }
-
+    
+    public int addRotasEscolhidas(int id, RotasEscolhidas r) {
+        for (Integer i : this.rotasEscolhidas.keySet()) {
+            if (this.rotasEscolhidas.get(i).equals(r)) {
+                return -1;
+            }
+        }
+        this.rotasEscolhidas.put(id, r);
+        return 1;
+    }
+    
     public String getActivo() {
         return this.activo;
 

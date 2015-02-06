@@ -1,6 +1,8 @@
 package ClassesDAO;
 
 import Classes.RotasEscolhidas;
+import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -13,10 +15,10 @@ import java.util.TreeSet;
  *
  * @author Tiago
  */
-public class RotasEscolhidasDAO implements Map<Integer,RotasEscolhidas>{
+public class RotasEscolhidasDAO implements Map<Integer, RotasEscolhidas> {
 
     public RotasEscolhidasDAO() {
-        
+
     }
 
     @Override
@@ -30,7 +32,8 @@ public class RotasEscolhidasDAO implements Map<Integer,RotasEscolhidas>{
                 res++;
             }
             ConexaoBD.fecharCursor(rs, stm);
-        } catch (SQLException e) {}
+        } catch (SQLException e) {
+        }
         return res;
     }
 
@@ -41,12 +44,13 @@ public class RotasEscolhidasDAO implements Map<Integer,RotasEscolhidas>{
             Statement stm = ConexaoBD.getConexao().createStatement();
             String sql = "SELECT * FROM ROTAS_ESCOLHIDAS";
             ResultSet rs = stm.executeQuery(sql);
-            if(!rs.next())
-                res=true;
+            if (!rs.next()) {
+                res = true;
+            }
             ConexaoBD.fecharCursor(rs, stm);
         } catch (SQLException e) {
         }
-        return res; 
+        return res;
     }
 
     @Override
@@ -54,7 +58,7 @@ public class RotasEscolhidasDAO implements Map<Integer,RotasEscolhidas>{
         boolean res = false;
         try {
             Integer id = (Integer) key;
-            String sql = "SELECT * FROM ROTAS_ESCOLHIDAS  WHERE id_rota_escolhida = "+id;
+            String sql = "SELECT * FROM ROTAS_ESCOLHIDAS  WHERE id_rota_escolhida = " + id;
             Statement stm = ConexaoBD.getConexao().createStatement();
             ResultSet rs = stm.executeQuery(sql);
             res = rs.next();
@@ -64,28 +68,48 @@ public class RotasEscolhidasDAO implements Map<Integer,RotasEscolhidas>{
         return res;
     }
 
-    
-
     @Override
     public RotasEscolhidas get(Object key) {
         RotasEscolhidas ro = null;
         try {
             Integer id = (Integer) key;
             Statement stm = ConexaoBD.getConexao().createStatement();
-            String sql = "SELECT * FROM ROTAs_ESCOLHIDAs WHERE id_rota_escolhida= "+id;
+            String sql = "SELECT * FROM ROTAs_ESCOLHIDAs WHERE id_rota_escolhida= " + id;
             ResultSet rs = stm.executeQuery(sql);
-            
-            if(rs.next()) {
-                ro = new RotasEscolhidas(rs.getInt(1),rs.getInt(2));
-            }            
+
+            if (rs.next()) {
+                ro = new RotasEscolhidas(rs.getInt(1), rs.getInt(2));
+            }
             ConexaoBD.fecharCursor(rs, stm);
-        } catch (SQLException e) {}
+        } catch (SQLException e) {
+        }
         return ro;
     }
 
     @Override
     public RotasEscolhidas put(Integer key, RotasEscolhidas value) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        RotasEscolhidas r = null;
+        PreparedStatement pst = null;
+        CallableStatement cs = null;
+        int id_rota=0;
+        try {
+            String sql = "select id_rota_escolhida.nextval from dual";
+            String sql2 = "adiciona_rotas_escolhidas(?,?)";
+            pst = ConexaoBD.getConexao().prepareCall(sql);
+            synchronized(this){
+                ResultSet rs = pst.executeQuery();
+                if(rs.next())
+                    id_rota=rs.getInt(1);
+            }
+            cs = ConexaoBD.getConexao().prepareCall(sql2);
+            cs.setInt(1, id_rota);
+            cs.setInt(2, value.getEscolhida());
+            cs.executeUpdate();
+            r = value;
+            cs.close();
+        } catch (SQLException e) {
+        }
+        return r;
     }
 
     @Override
@@ -106,7 +130,7 @@ public class RotasEscolhidasDAO implements Map<Integer,RotasEscolhidas>{
 
             ConexaoBD.fecharCursor(rs, stm);
         } catch (SQLException e) {
-            
+
         }
         return res;
     }
@@ -116,13 +140,11 @@ public class RotasEscolhidasDAO implements Map<Integer,RotasEscolhidas>{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    
-    
     @Override
     public boolean containsValue(Object value) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     @Override
     public void putAll(Map<? extends Integer, ? extends RotasEscolhidas> m) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -132,7 +154,6 @@ public class RotasEscolhidasDAO implements Map<Integer,RotasEscolhidas>{
     public void clear() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
 
     @Override
     public Set<Entry<Integer, RotasEscolhidas>> entrySet() {

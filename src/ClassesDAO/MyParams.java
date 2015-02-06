@@ -5,7 +5,6 @@
  */
 package ClassesDAO;
 
-import Classes.Sistema;
 import GUI.OCP;
 import ilog.opl.*;
 import java.util.Map;
@@ -24,6 +23,7 @@ public class MyParams extends IloCustomOplDataSource {
         super(oplF);
         this.ocp = ocp;
     }
+    
 
     public void customRead() {
         IloOplDataHandler handler = getDataHandler();
@@ -34,9 +34,10 @@ public class MyParams extends IloCustomOplDataSource {
         handler.endElement();
         
         //Numero Clientes
+      
         handler.startElement("V");
         handler.startSet();
-        for (int i : this.ocp.getSistema().getClientes().keySet()) {
+        for (int i : this.ocp.keysetClientesVisitados()) {
             handler.addIntItem(i);
         }
         handler.endSet();
@@ -44,7 +45,7 @@ public class MyParams extends IloCustomOplDataSource {
         
         handler.startElement("Clientes");
         handler.startIndexedArray();
-        for (int i : this.ocp.getSistema().getClientes().keySet()) {
+        for (int i : this.ocp.keysetClientesVisitados()) {
             handler.setItemIntIndex(i);
             handler.addIntItem(i);
         }
@@ -88,7 +89,7 @@ public class MyParams extends IloCustomOplDataSource {
         //Matriz ClientesRotas
         handler.startElement("ClientesRotas");
         handler.startIndexedArray();
-        for (int i : this.ocp.getSistema().getClientes().keySet()) {
+        for (int i : this.ocp.keysetClientesVisitados()) {
             handler.setItemIntIndex(i);
             handler.startIndexedArray();
             for (int j : this.ocp.getSistema().getRotas().keySet()) {
@@ -125,4 +126,4 @@ public class MyParams extends IloCustomOplDataSource {
         handler.endElement();
         
     }
-}
+};

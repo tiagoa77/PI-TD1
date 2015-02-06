@@ -11,6 +11,7 @@ import Classes.Funcionario;
 import Classes.Local;
 import Classes.Produto;
 import Classes.Rota;
+import Classes.RotasEscolhidas;
 import Classes.Sistema;
 import Classes.Veiculo;
 import ClassesDAO.ConexaoBD;
@@ -28,20 +29,25 @@ import ilog.opl.IloOplModelDefinition;
 import ilog.opl.IloOplModelSource;
 import ilog.opl.IloOplSettings;
 import ilog.cp.*;
+import ilog.opl.IloCustomOplDataSource;
+import ilog.opl.IloOplDataHandler;
 
 import java.awt.Toolkit;
+import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
+import javax.swing.JTabbedPane;
 
 /**
  *
@@ -52,8 +58,8 @@ public final class OCP extends javax.swing.JFrame {
     private final Sistema sistema;
     private int[][] clientesRotas;
 
-    public OCP(Sistema s,String login) {
-        
+    public OCP(Sistema s, String login) {
+
         initComponents();
         this.setLocationRelativeTo(null);
         this.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\Tiago\\Documents\\NetBeansProjects\\PI-TD1\\logo.png"));
@@ -65,14 +71,15 @@ public final class OCP extends javax.swing.JFrame {
         this.jTextPaneSessao5.setText(login);
         this.jTextPaneSessao7.setText(login);
 
+        deleteRotasEscolhidas();
         limpaRota();
         cmbMotorista();
         cmbVeiculo();
-        listaProdutos();
+        //listaProdutos();
         listaFuncionarios();
-        listaClientes();
-        listaEncomendas();
-        listaRotasEscolhidas();
+        //listaClientes();
+        //listaEncomendas();
+        //listaRotasEscolhidas();
         //clientesRotas = this.sistema.ClientesRotas();
 
         this.jButtonGuardarFuncionario.setVisible(false);
@@ -172,6 +179,16 @@ public final class OCP extends javax.swing.JFrame {
         }
     }
 
+    private void deleteRotasEscolhidas() {
+        try {
+            CallableStatement cs = null;
+            String sql = "{call apagaRotasEscolhidas}";
+            cs = ConexaoBD.getConexao().prepareCall(sql);
+            cs.executeUpdate();
+        } catch (SQLException e) {
+        }
+    }
+
     private void atualizaRota(int key, int idFuncionario, int idVeiculo) {
         try {
             String sql = "UPDATE Rota SET"
@@ -236,7 +253,7 @@ public final class OCP extends javax.swing.JFrame {
             str.addElement(this.sistema.getProdutos().get(i).getNome());
         }
         jListProdutos.setModel(str);
-        jListProdutos.setSelectedIndex(0);
+        //jListProdutos.setSelectedIndex(0);
     }
 
     public void listaRotasEscolhidas() {
@@ -245,7 +262,7 @@ public final class OCP extends javax.swing.JFrame {
             str.addElement(this.sistema.getRotasEscolhidas().get(i).getId_rota_escolhida());
         }
         jListRotasEscolhidas.setModel(str);
-        jListRotasEscolhidas.setSelectedIndex(0);
+        //jListRotasEscolhidas.setSelectedIndex(0);
     }
 
     public void listaClientes() {
@@ -254,7 +271,7 @@ public final class OCP extends javax.swing.JFrame {
             str.addElement(this.sistema.getClientes().get(i).getNome_farmacia());
         }
         jListClientes.setModel(str);
-        jListClientes.setSelectedIndex(0);
+        //jListClientes.setSelectedIndex(0);
     }
 
     public void listaEncomendas() {
@@ -274,7 +291,7 @@ public final class OCP extends javax.swing.JFrame {
          }
          */
         jListEncomendas.setModel(str);
-        jListEncomendas.setSelectedIndex(0);
+        //jListEncomendas.setSelectedIndex(0);
     }
 
     public Set<Integer> keysetFuncionariosMotoristas() {
@@ -343,13 +360,29 @@ public final class OCP extends javax.swing.JFrame {
         return res;
     }
 
+    public Set<Integer> keysetClientesVisitados() {
+        Set<Integer> res = new TreeSet<>();
+        try {
+            String sql = "select distinct id_cliente from cliente, encomenda where id_cliente=c_id_cliente order by id_cliente";
+            Statement stm = ConexaoBD.getConexao().createStatement();
+            ResultSet rs = stm.executeQuery(sql);
+
+            while (rs.next()) {
+                res.add(rs.getInt(1));
+            }
+            ConexaoBD.fecharCursor(rs, stm);
+        } catch (SQLException e) {
+        }
+        return res;
+    }
+
     public void listaFuncionarios() {
         DefaultListModel<String> str = new DefaultListModel<String>();
         for (int i : this.sistema.getFuncionarios().keySet()) {
             str.addElement(this.sistema.getFuncionarios().get(i).getNome());
         }
         jListFuncionarios.setModel(str);
-        jListFuncionarios.setSelectedIndex(0);
+        //jListFuncionarios.setSelectedIndex(0);
     }
 
     public void listaProdutosEncomendas(int id) {
@@ -366,7 +399,7 @@ public final class OCP extends javax.swing.JFrame {
             str.addElement(this.sistema.getFuncionarios().get(i).getNome());
         }
         jListFuncionarios.setModel(str);
-        jListFuncionarios.setSelectedIndex(0);
+        //jListFuncionarios.setSelectedIndex(0);
     }
 
     public void listaFuncionariosOperadores() {
@@ -375,7 +408,7 @@ public final class OCP extends javax.swing.JFrame {
             str.addElement(this.sistema.getFuncionarios().get(i).getNome());
         }
         jListFuncionarios.setModel(str);
-        jListFuncionarios.setSelectedIndex(0);
+        //jListFuncionarios.setSelectedIndex(0);
     }
 
     public void listaClientesInativos() {
@@ -384,7 +417,7 @@ public final class OCP extends javax.swing.JFrame {
             str.addElement(this.sistema.getClientes().get(i).getNome_farmacia());
         }
         jListClientes.setModel(str);
-        jListClientes.setSelectedIndex(0);
+        //jListClientes.setSelectedIndex(0);
     }
 
     public String seleccionaProduto() {
@@ -427,6 +460,117 @@ public final class OCP extends javax.swing.JFrame {
         return s;
     }
 
+static class MyParams extends IloCustomOplDataSource{    
+    private OCP ocp;
+    MyParams(IloOplFactory oplF, OCP ocp) {
+        super(oplF);
+        this.ocp=ocp;   
+    }
+    
+
+    public void customRead() {
+        IloOplDataHandler handler = getDataHandler();
+        
+        //Numero Veiculos
+        handler.startElement("K");
+        handler.addIntItem(this.ocp.getSistema().getVeiculos().size());
+        handler.endElement();
+        
+        //Numero Clientes
+      
+        handler.startElement("V");
+        handler.startSet();
+        for (int i : this.ocp.keysetClientesVisitados()) {
+            handler.addIntItem(i);
+        }
+        handler.endSet();
+        handler.endElement();
+        
+        handler.startElement("Clientes");
+        handler.startIndexedArray();
+        for (int i : this.ocp.keysetClientesVisitados()) {
+            handler.setItemIntIndex(i);
+            handler.addIntItem(i);
+        }
+        handler.endIndexedArray();
+        handler.endElement();
+
+        //Numero Rotas
+        
+        handler.startElement("R");
+        handler.startSet();
+        for (int i : this.ocp.getSistema().getRotas().keySet()) {
+            handler.addIntItem(i);
+        }
+        handler.endSet();
+        handler.endElement();
+        
+        handler.startElement("Rotas");
+        handler.startIndexedArray();
+        for (int i : this.ocp.getSistema().getRotas().keySet()) {
+            handler.setItemIntIndex(i);
+            handler.addIntItem(i);
+        }
+        handler.endIndexedArray();
+        handler.endElement();
+       
+
+        //Numero Custos 
+     /*   
+        handler.startElement("C");
+        handler.startSet();
+        for (int i : this.sistema.getRotas().keySet()) {
+            handler.addIntItem(i-1);
+        }
+        handler.endSet();
+        handler.endElement();
+       */ 
+        
+        Map<Integer,String[]> clientes = this.ocp.getSistema().parseClientes();
+        
+        int Conta=0;
+        //Matriz ClientesRotas
+        handler.startElement("ClientesRotas");
+        handler.startIndexedArray();
+        for (int i : this.ocp.keysetClientesVisitados()) {
+            handler.setItemIntIndex(i);
+            handler.startIndexedArray();
+            for (int j : this.ocp.getSistema().getRotas().keySet()) {
+                for(int k=0;k<clientes.get(j).length;k++){
+                    handler.setItemIntIndex(j);
+                    if (Integer.parseInt(clientes.get(j)[k])==i) {
+                        handler.addIntItem(1);
+                        Conta++;
+                    }
+                }
+            }
+            handler.endIndexedArray();
+        }
+        handler.endIndexedArray();
+        handler.endElement();
+        
+        System.out.println(Conta);
+        int total;
+        int c1,c2;
+        handler.startElement("Custos");
+        handler.startIndexedArray();
+        for (int i: this.ocp.getSistema().getRotas().keySet()) {
+            total=0;
+            handler.setItemIntIndex(i);
+            for(int j=1;j<this.ocp.getSistema().getTamanho().get(i);j++){
+                c1= Integer.parseInt(clientes.get(i)[j-1]);
+                c2= Integer.parseInt(clientes.get(i)[j]);
+                //System.out.println("Rotas: " + i + "   c1="+c1+"    c2="+ c2+ "   Dist: "+this.sistema.devolve_distancias(c1,c2));
+                total+=this.ocp.getSistema().devolve_distancias(c1,c2);
+            }
+            handler.addIntItem(total);
+        }
+        handler.endIndexedArray();
+        handler.endElement();
+        
+    }
+};
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -453,7 +597,6 @@ public final class OCP extends javax.swing.JFrame {
         jButtonValidar = new javax.swing.JButton();
         jTextPaneAprovacao = new javax.swing.JTextPane();
         jButtonGerar = new javax.swing.JButton();
-        jTextPaneTeste = new javax.swing.JTextPane();
         Encomendas = new javax.swing.JPanel();
         jLabelEncomendas = new javax.swing.JLabel();
         jLabelImagem1 = new javax.swing.JLabel();
@@ -543,6 +686,12 @@ public final class OCP extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
+
+        Tabs.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                TabsStateChanged(evt);
+            }
+        });
 
         jLabelRotasEscolhidas.setText("Rotas Escolhidas");
 
@@ -644,10 +793,6 @@ public final class OCP extends javax.swing.JFrame {
                                     .addComponent(jComboBoxMotorista, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jComboBoxVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addContainerGap(19, Short.MAX_VALUE))))
-            .addGroup(RotasLayout.createSequentialGroup()
-                .addGap(170, 170, 170)
-                .addComponent(jTextPaneTeste, javax.swing.GroupLayout.PREFERRED_SIZE, 373, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
         );
         RotasLayout.setVerticalGroup(
             RotasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -689,9 +834,7 @@ public final class OCP extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(jTextPaneAprovacao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addComponent(jScrollPaneRotas))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
-                .addComponent(jTextPaneTeste, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(65, Short.MAX_VALUE))
         );
 
         Tabs.addTab("Rotas", Rotas);
@@ -1531,17 +1674,17 @@ public final class OCP extends javax.swing.JFrame {
 
     private void jListEncomendasValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jListEncomendasValueChanged
         String aux = seleccionaEncomenda();
-        int id = Integer.parseInt(aux);
-        int idCliente = this.sistema.getEncomendas().get(id).getCliente_id_cliente();
-        Cliente c = this.sistema.getClientes().get(idCliente);
-        Encomenda e = null;
-        for (int i : this.sistema.getEncomendas().keySet()) {
-            if (this.sistema.getEncomendas().get(i).getId_encomenda() == id) {
-                e = this.sistema.getEncomendas().get(i);
+        if (aux != null) {
+            int id = Integer.parseInt(aux);
+            int idCliente = this.sistema.getEncomendas().get(id).getCliente_id_cliente();
+            Cliente c = this.sistema.getClientes().get(idCliente);
+            Encomenda e = null;
+            for (int i : this.sistema.getEncomendas().keySet()) {
+                if (this.sistema.getEncomendas().get(i).getId_encomenda() == id) {
+                    e = this.sistema.getEncomendas().get(i);
+                }
             }
-        }
 
-        if (aux != null && e != null) {
             String fatura = Integer.toString(e.getFactura());
             this.jTextPaneFatura.setText(fatura);
             String banheiras = Integer.toString(e.getBanheiras());
@@ -1588,95 +1731,40 @@ public final class OCP extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonValidarActionPerformed
 
     private void jButtonGerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGerarActionPerformed
-        
-        int status = 127;
-        try {
-            IloOplFactory.setDebugMode(true);
-            IloOplFactory oplF = new IloOplFactory();
-            IloOplErrorHandler errHandler = oplF.createOplErrorHandler(System.out);
-            IloOplModelSource modelSource = oplF.createOplModelSource("C:\\PI_TD.mod");
-            IloOplSettings settings = oplF.createOplSettings(errHandler);
-            IloOplModelDefinition def = oplF.createOplModelDefinition(modelSource, settings);
-            //IloCP cp = oplF.createCP();
-            IloCplex cplex = oplF.createCplex();
-            IloOplModel opl = oplF.createOplModel(def, cplex);
-
-            IloOplDataSource dataSource = new MyParams(oplF, this);
-            opl.addDataSource(dataSource);
-            opl.generate();
-            if (cplex.solve()) {
-
-                System.out.println("OBJECTIVE: " + opl.getCplex().getObjValue());
-                opl.postProcess();
-                opl.printSolution(System.out);
-                opl.getElement("y").asIntMap();
-
-                HashMap<Integer, Integer> hm = new HashMap<>();
-                //res = opl.getElement("naoEscalonadas").asIntMap();
-                //System.out.println("RESULTADO: "+opl.getElement("naoEscalonadas").asIntMap());
-
-                IloIntMap rs = opl.getElement("y").asIntMap();
-                IloIntSet i = opl.getElement("R").asIntSet();
-
-                for (java.util.Iterator it1 = i.iterator(); it1.hasNext();) {
-                    Integer sub1 = (Integer) it1.next();
-                    hm.put(sub1, rs.get(sub1));
-                }
-                this.jTextPaneTeste.setText(hm.toString());
-                
-                
-                
-            } else {
-                System.out.println("NOOOOOOOOOOOOO SOLUTIONNNNNNNNNNNNNNNNN!");
-                status = 2;
-            }
-            oplF.end();
-        } catch (IloOplException ex) {
-            System.err.println("### OPL exception: " + ex.getMessage());
-            ex.printStackTrace();
-            status = 2;
-        } catch (IloException ex) {
-            System.err.println("### CONCERT exception: " + ex.getMessage());
-            ex.printStackTrace();
-            status = 3;
-        } catch (Exception ex) {
-            System.err.println("### UNEXPECTED UNKNOWN ERROR ...");
-            ex.printStackTrace();
-            status = 4;
-        }
-    }
-
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Inicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Inicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Inicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Inicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-            }
-        });
-
+        new GerarRotas(this).setVisible(true);
+        listaRotasEscolhidas();
+        listaFuncionarios();
     }//GEN-LAST:event_jButtonGerarActionPerformed
+
+    private void TabsStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_TabsStateChanged
+        if (evt.getSource() instanceof JTabbedPane) {
+            JTabbedPane pane = (JTabbedPane) evt.getSource();
+            if (pane.getSelectedIndex() == 0) {
+                //listaFuncionarios();
+                //System.gc(); //chama o garbage collector
+                //listaRotasEscolhidas();
+                System.gc();
+            }
+            if (pane.getSelectedIndex() == 1) {
+                listaEncomendas();
+                System.gc(); //chama o garbage collector
+            }
+            if (pane.getSelectedIndex() == 2) {
+                listaClientes();
+                System.gc(); //chama o garbage collector
+            }
+            if (pane.getSelectedIndex() == 3) {
+                //listaFuncionarios();
+                System.gc(); //chama o garbage collector
+            }
+            if (pane.getSelectedIndex() == 4) {
+                listaProdutos();
+                System.gc(); //chama o garbage collector
+            }
+
+            System.out.println("Selected paneNo : " + pane.getSelectedIndex());
+        }
+    }//GEN-LAST:event_TabsStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Clientes;
@@ -1786,7 +1874,6 @@ public final class OCP extends javax.swing.JFrame {
     private javax.swing.JTextPane jTextPaneSessao7;
     private javax.swing.JTextPane jTextPaneTelefoneCliente;
     private javax.swing.JTextPane jTextPaneTelefoneFuncionario;
-    private javax.swing.JTextPane jTextPaneTeste;
     private javax.swing.JTextPane jTextPaneTipo;
     // End of variables declaration//GEN-END:variables
 }
