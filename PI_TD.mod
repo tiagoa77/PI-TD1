@@ -7,19 +7,16 @@
 //Conjuntos
 {int} V = ...; //clientes {1,...n}
 {int} R = ...; //rotas
-{int} C=...;  //custos
-//{int} K =...; //veiculos
-int K=...; // numero total de veiculos -> SIZE DA TABELA DE VEICULOS
+int K=...; // numero total de veiculos
 
 //Parametros com respetivos indices
 int Clientes[i in V] = ...; //i=1,2,3...|V|
-int Rotas[y in R]=...;
+int Rotas[r in R]=...;
 int Custos[c in R]=...;
-//int Veiculos[k in K]=...;
 int ClientesRotas[V][R]=...;
 
 //Variavel decisão
-dvar boolean y[r in R]; // 
+dvar int+ y[r in R] in 0 .. 1; // 
 
 
 //funcao objectivo
@@ -27,8 +24,9 @@ minimize
   sum (r in R) Custos[r] * y[r];
   
 subject to{
-	forall(r in R)
-Restricao1:		sum (i in V) ClientesRotas[i][r]*y[r]>=1;	  
-Restricao2:	  sum(r in R) y[r]<= K; // k->size da tabela veiculos
-	
+			
+forall(i in V) sum (r in R) ClientesRotas[i][r]*y[r] >= 1;
+			
+sum (r in R) y[r] <= K;
+			  
 }

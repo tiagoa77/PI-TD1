@@ -76,10 +76,12 @@ public class RotaDAO implements Map<Integer,Rota>{
             ResultSet rs = stm.executeQuery(sql);
             
             if(rs.next()) {
-                ro = new Rota(rs.getInt(1),rs.getDate(2),rs.getNString(3),rs.getString(6));
+                ro = new Rota(rs.getInt(1),rs.getDate(2),rs.getNString(3),rs.getInt(4),rs.getInt(5),rs.getString(6));
             }            
             ConexaoBD.fecharCursor(rs, stm);
-        } catch (SQLException e) {}
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         return ro;
     }
 

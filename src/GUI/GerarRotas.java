@@ -45,7 +45,7 @@ public class GerarRotas extends javax.swing.JDialog {
             IloOplFactory.setDebugMode(false);
             IloOplFactory oplF = new IloOplFactory();
             IloOplErrorHandler errHandler = oplF.createOplErrorHandler(System.out);
-            IloOplModelSource modelSource = oplF.createOplModelSource("C:\\PI_TD.mod");
+            IloOplModelSource modelSource = oplF.createOplModelSource("C:\\Users\\Tiago\\Documents\\NetBeansProjects\\PI-TD1\\PI_TD.mod");
             IloOplSettings settings = oplF.createOplSettings(errHandler);
             IloOplModelDefinition def = oplF.createOplModelDefinition(modelSource, settings);
             IloCplex cplex = oplF.createCplex();

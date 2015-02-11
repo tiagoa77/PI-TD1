@@ -20,6 +20,8 @@ public class Rota {
     private Date data_hora;   
     private String listaClientes;
     private String aprovacao;
+    private int r_id_funcionario;
+    private int r_id_veiculo;
     private Map<Integer,Encomenda> encomendas;
     private Map<Integer,Cliente> clientes;
     
@@ -28,6 +30,8 @@ public class Rota {
         this.data_hora= new Date();
         this.listaClientes="";
         this.aprovacao="Nao Aprovado";
+        this.r_id_funcionario=0;
+        this.r_id_veiculo=0;
         this.encomendas=new EncomendaDAO();
         this.clientes=new ClienteDAO();
     }
@@ -40,6 +44,15 @@ public class Rota {
         this.clientes=new ClienteDAO();
     }
     
+    public Rota(int id, Date data_hora,String listaClientes,int id_funcionario,int id_veiculo,String estado){
+        this.id_rota=id;
+        this.data_hora=data_hora;
+        this.listaClientes=listaClientes;
+        this.aprovacao=estado;
+        this.r_id_funcionario=id_funcionario;
+        this.r_id_veiculo=id_veiculo;
+        this.clientes=new ClienteDAO();
+    }
     
     public Rota(Rota r){
         this.id_rota=r.getId_rota();
@@ -51,6 +64,14 @@ public class Rota {
 
     public String getAprovacao() {
         return aprovacao;
+    }
+
+    public int getR_id_funcionario() {
+        return r_id_funcionario;
+    }
+
+    public int getR_id_veiculo() {
+        return r_id_veiculo;
     }
 
     
