@@ -89,6 +89,7 @@ public class Sistema {
             if (rs.next()) {
                 distancia = rs.getInt(1);
             }
+            ps.close();
         } catch (SQLException e) {
         }
         return distancia;
@@ -202,14 +203,14 @@ public class Sistema {
         return 1;
     }
 
-    public int addLocal(int id, Local l) {
+    public Local addLocal(int id, Local l) {
         for (Integer i : this.locais.keySet()) {
             if (this.locais.get(i).equals(l)) {
-                return -1;
+                return null;
             }
         }
-        this.locais.put(id, l);
-        return 1;
+        
+        return this.locais.put(id, l);
     }
 
     public int addCliente(int id, Cliente c) {

@@ -105,21 +105,23 @@ public class LocalDAO implements Map<Integer,Local>{
             String sql = "{call adiciona_local(?,?,?)}";
             
             PreparedStatement pst = ConexaoBD.getConexao().prepareStatement(id); //SERVE PARA CHAMAR AS SEQUENCIAS
-            synchronized (this) {
+            
                 ResultSet rs = pst.executeQuery();
                 if (rs.next()) {
                     id_local = rs.getInt(1);
+                    rs.close();
                 }
-            }
+            
             
             cs = ConexaoBD.getConexao().prepareCall(sql);
             cs.setInt(1, id_local);
             cs.setString(2, value.getMorada());
             cs.setString(3, value.getConcelho());
             cs.executeUpdate();
-            l = value;
+            l = new Local(id_local, value.getMorada(), value.getConcelho());
             cs.close();
-        } catch (SQLException e) {
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
         return l;
     }

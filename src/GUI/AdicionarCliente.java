@@ -190,18 +190,17 @@ public class AdicionarCliente extends javax.swing.JDialog {
         int id_local = 0;
 
         Local novoL = new Local(id, morada, concelho);
-        
 
-        if (this.o.getSistema().addLocal(novoL.getId_local(), novoL) == 1) {
-            
-            Cliente novoC = new Cliente(id, nomeFarmacia, nomeResp, contacto, nif, 1, id_local);
-            if (this.o.getSistema().addCliente(novoC.getId_cliente(), novoC) == 1) {
-                JOptionPane.showMessageDialog(null, "Adicionado com Sucesso");
-                this.setVisible(false);
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Erro");
+        Local local = this.o.getSistema().addLocal(novoL.getId_local(), novoL);
+
+        Cliente novoC = new Cliente(id, nomeFarmacia, nomeResp, contacto, nif, 1, local.getId_local());
+        if (this.o.getSistema().addCliente(novoC.getId_cliente(), novoC) == 1) {
+            JOptionPane.showMessageDialog(null, "Adicionado com Sucesso");
+            this.setVisible(false);
         }
+        else {
+            JOptionPane.showMessageDialog(null, "Erro");
+    }
     }//GEN-LAST:event_jButtonRegistarActionPerformed
 
     private void jTextFieldConcelhoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldConcelhoActionPerformed

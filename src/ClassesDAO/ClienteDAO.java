@@ -105,33 +105,36 @@ public class ClienteDAO implements Map<Integer,Cliente>{
     @Override
     public Cliente put(Integer key, Cliente value) {
         Cliente c = null;
-        CallableStatement cs = null;
+        PreparedStatement pst = null;
         int id_cliente = 0;
         String id = "select id_cliente.NEXTVAL from dual";
 
         try {
-            String sql = "{call adiciona_cliente(?,?,?,?,?,?,?)}";
+            //String sql = "{call adiciona_cliente(?,?,?,?,?,?,?)}";
+            String sql = "insert into cliente values(?,?,?,?,?,?,?)";
             
-            PreparedStatement pst = ConexaoBD.getConexao().prepareStatement(id);
+            PreparedStatement pst2 = ConexaoBD.getConexao().prepareStatement(id);
             synchronized (this) {
-                ResultSet rs = pst.executeQuery();
+                ResultSet rs = pst2.executeQuery();
                 if (rs.next()) {
                     id_cliente = rs.getInt(1);
                 }
+                rs.close();
             }
             
-            cs = ConexaoBD.getConexao().prepareCall(sql);
-            cs.setInt(1, id_cliente);
-            cs.setString(2, value.getNome_farmacia());
-            cs.setString(3, value.getNome_farmaceutico());
-            cs.setInt(4, value.getContacto());
-            cs.setInt(5, value.getNif());
-            cs.setInt(6, value.getActivo());
-            cs.setInt(7, value.getLocal_id_local());
-            cs.executeUpdate();
+            pst = ConexaoBD.getConexao().prepareStatement(sql);
+            pst.setInt(1, id_cliente);
+            pst.setString(2, value.getNome_farmacia());
+            pst.setString(3, value.getNome_farmaceutico());
+            pst.setInt(4, value.getContacto());
+            pst.setInt(5, value.getNif());
+            pst.setInt(6, value.getActivo());
+            pst.setInt(7, value.getLocal_id_local());
+            int i = pst.executeUpdate();
             c = value;
-            cs.close();
-        } catch (SQLException e) {
+            pst.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
         return c;
     }

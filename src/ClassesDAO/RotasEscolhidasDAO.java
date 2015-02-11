@@ -90,25 +90,29 @@ public class RotasEscolhidasDAO implements Map<Integer, RotasEscolhidas> {
     public RotasEscolhidas put(Integer key, RotasEscolhidas value) {
         RotasEscolhidas r = null;
         PreparedStatement pst = null;
-        CallableStatement cs = null;
+        //CallableStatement cs = null;
+        PreparedStatement pst2 = null;
         int id_rota=0;
         try {
             String sql = "select id_rota_escolhida.nextval from dual";
-            String sql2 = "adiciona_rotas_escolhidas(?,?)";
-            pst = ConexaoBD.getConexao().prepareCall(sql);
+            //String sql2 = "adiciona_rotas_escolhidas(?,?)";
+            String sql2 = "insert into rotas_escolhidas values(?,?)";
+            pst = ConexaoBD.getConexao().prepareStatement(sql);
             synchronized(this){
                 ResultSet rs = pst.executeQuery();
                 if(rs.next())
                     id_rota=rs.getInt(1);
             }
-            cs = ConexaoBD.getConexao().prepareCall(sql2);
-            cs.setInt(1, id_rota);
-            cs.setInt(2, value.getEscolhida());
-            cs.executeUpdate();
+            pst2 = ConexaoBD.getConexao().prepareStatement(sql2);
+            pst2.setInt(1, id_rota);
+            pst2.setInt(2, value.getEscolhida());
+            pst2.executeUpdate();
             r = value;
-            cs.close();
-        } catch (SQLException e) {
-        }
+            pst.close();
+            pst2.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        } 
         return r;
     }
 

@@ -40,6 +40,7 @@ public class ArmazemDAO implements Map<Integer, Armazem> {
             ConexaoBD.fecharCursor(rs, stm);
         } catch (SQLException e) {
         }
+        
         return res;
     }
 
@@ -111,6 +112,7 @@ public class ArmazemDAO implements Map<Integer, Armazem> {
                 ResultSet rs = pst.executeQuery();
                 if(rs.next())
                     id_armazem=rs.getInt(1);
+                rs.close();
             }
                       
             cs = ConexaoBD.getConexao().prepareCall(sql);
@@ -118,6 +120,7 @@ public class ArmazemDAO implements Map<Integer, Armazem> {
             cs.setString(2, value.getLocalidade());
             cs.setString(3, value.getCoordenadas());
             cs.executeQuery();
+            cs.close();
             
         }catch(SQLException e){ }
         
@@ -134,6 +137,7 @@ public class ArmazemDAO implements Map<Integer, Armazem> {
             cs = ConexaoBD.getConexao().prepareCall(sql);
             cs.setInt(1,id);
             cs.execute();
+            cs.close();
         } catch (SQLException e) {
         }
         return a;   
